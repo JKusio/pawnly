@@ -2,7 +2,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import '../styles/global.scss';
 
-function App({ Component, pageProps, router }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
