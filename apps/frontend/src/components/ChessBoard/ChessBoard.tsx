@@ -14,6 +14,7 @@ const ChessBoardComponent = () => {
                 piece={piece.piece}
                 color={piece.color}
                 position={{ x, y }}
+                key={`piece-${y}-${x}`}
               />
             );
           }
