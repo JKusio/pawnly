@@ -1,6 +1,6 @@
+import { Color } from 'lib/chess/pieces/Color';
+import { Piece } from 'lib/chess/pieces/Piece';
 import Image from 'next/image';
-import { Color } from './Color';
-import { Piece } from './Piece';
 
 const PIECE_MAP = {
   [Color.White]: {
