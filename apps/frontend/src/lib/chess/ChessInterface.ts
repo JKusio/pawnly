@@ -1,4 +1,4 @@
-import { Chess, ChessInstance, PieceType, Square } from 'chess.js';
+import { Chess, ChessInstance, Move, PieceType, Square } from 'chess.js';
 
 export type PieceColor = 'b' | 'w';
 
@@ -19,5 +19,13 @@ export class ChessInterface {
 
   public getBoard(): ChessSquare[][] {
     return this.chess.board();
+  }
+
+  public getMoves(square: string): Move[] {
+    return this.chess.moves({ square, verbose: true });
+  }
+
+  public move(move: Move): Move | null {
+    return this.chess.move(move);
   }
 }

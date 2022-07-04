@@ -29,13 +29,13 @@ const mapPieceToImage = (type: PieceType, color: PieceColor): string => {
 
 const ChessPieceComponent = ({
   chessPiece,
-  setHoverState
+  setHoverState,
+  onMove
 }: {
   chessPiece: ChessPiece;
   setHoverState: any;
+  onMove: any;
 }) => {
-  console.log(chessPiece);
-
   const background = mapPieceToImage(chessPiece.type, chessPiece.color);
   const piecePositionClassName = `board-position-${chessPiece.square}`;
 
@@ -54,14 +54,20 @@ const ChessPieceComponent = ({
     }
   };
 
-  const handleDrag = (e: DraggableEvent, data: DraggableData): void | false => {
+  const getCords = (data: DraggableData): { x: number; y: number } => {
     const middle = data.node.offsetWidth / 2;
     const squareSize = (data.node.parentElement?.clientWidth || 0) / 8;
     const offsetLeft = data.node.offsetLeft;
     const offsetTop = data.node.offsetTop;
 
-    const x = 7 - Math.floor((offsetLeft + data.x + middle) / squareSize);
+    const x = Math.floor((offsetLeft + data.x + middle) / squareSize);
     const y = 7 - Math.floor((offsetTop + data.y + middle) / squareSize);
+
+    return { x, y };
+  };
+
+  const handleDrag = (e: DraggableEvent, data: DraggableData): void | false => {
+    const { x, y } = getCords(data);
 
     setHoverState({
       visible: 'visible',
@@ -73,6 +79,12 @@ const ChessPieceComponent = ({
     e: DraggableEvent,
     data: DraggableData
   ): void | false => {
+    const cords = getCords(data);
+
+    if (onMove(cords, chessPiece)) {
+      return false;
+    }
+
     if (draggableRef.current) {
       draggableRef.current.setState({ x: 0, y: 0 });
     }
