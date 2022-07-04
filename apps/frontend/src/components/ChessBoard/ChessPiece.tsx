@@ -2,6 +2,7 @@ import { Color } from 'lib/chess/pieces/Color';
 import { Piece } from 'lib/chess/pieces/Piece';
 import React from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
+import { HoverState } from './HoverSquare';
 
 const PIECE_MAP = {
   [Color.White]: {
@@ -29,15 +30,17 @@ const mapPieceToImage = (piece: Piece, color: Color): string => {
 export const ChessPiece = ({
   piece,
   color,
-  position
+  position,
+  setHoverState
 }: {
   piece: Piece;
   color: Color;
   position: { x: number; y: number };
+  setHoverState: any;
 }) => {
   const background = mapPieceToImage(piece, color);
   const { x, y } = position;
-  const piecePositionClassName = `chess-piece-${y}${x}`;
+  const piecePositionClassName = `board-position-${y}${x}`;
 
   const draggableRef = React.useRef<Draggable>(null);
 
@@ -54,10 +57,17 @@ export const ChessPiece = ({
     }
   };
 
-  const handleDrag = (
-    e: DraggableEvent,
-    data: DraggableData
-  ): void | false => {};
+  const handleDrag = (e: DraggableEvent, data: DraggableData): void | false => {
+    const middle = data.node.offsetWidth / 2;
+    const squareSize = (data.node.parentElement?.clientWidth || 0) / 8;
+    const offsetLeft = data.node.offsetLeft;
+    const offsetTop = data.node.offsetTop;
+
+    const x = Math.floor((offsetLeft + data.x + middle) / squareSize);
+    const y = 7 - Math.floor((offsetTop + data.y + middle) / squareSize);
+
+    setHoverState({ visible: 'visible', position: `board-position-${y}${x}` });
+  };
 
   const handleGrabStop = (
     e: DraggableEvent,
@@ -66,6 +76,8 @@ export const ChessPiece = ({
     if (draggableRef.current) {
       draggableRef.current.setState({ x: 0, y: 0 });
     }
+
+    setHoverState({ visible: 'invisible', position: 'board-position-00' });
   };
 
   return (
