@@ -1,10 +1,10 @@
-import { ChessBoard } from 'lib/chess/board/ChessBoard';
+import { ChessInterface, ChessSquare } from 'lib/chess/ChessInterface';
 import React, { useState } from 'react';
-import { ChessPiece } from './ChessPiece';
+import ChessPiece from './ChessPiece';
 import HoverSquare, { HoverState } from './HoverSquare';
 
 const ChessBoardComponent = () => {
-  const chessBoard = new ChessBoard();
+  const chessBoard = new ChessInterface();
 
   const basicHoverState: HoverState = {
     visible: 'invisible',
@@ -15,14 +15,12 @@ const ChessBoardComponent = () => {
 
   return (
     <div className="w-full h-full bg-[url('https://images.chesscomfiles.com/chess-themes/boards/walnut/150.jpg')] bg-center bg-cover relative">
-      {chessBoard.board.map((row, y) =>
-        row.map((piece, x) => {
-          if (piece !== null) {
+      {chessBoard.getBoard().map((row: ChessSquare[], y: number) =>
+        row.map((square: ChessSquare, x: number) => {
+          if (square !== null) {
             return (
               <ChessPiece
-                piece={piece.piece}
-                color={piece.color}
-                position={{ x, y }}
+                chessPiece={square}
                 setHoverState={setHoverState}
                 key={`piece-${y}-${x}`}
               />
