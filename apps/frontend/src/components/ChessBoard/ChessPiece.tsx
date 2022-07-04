@@ -1,12 +1,7 @@
 import { Color } from 'lib/chess/pieces/Color';
 import { Piece } from 'lib/chess/pieces/Piece';
-import React, { useState } from 'react';
-import Draggable, {
-  DraggableData,
-  DraggableEvent,
-  DraggableEventHandler,
-  DraggableProps
-} from 'react-draggable';
+import React from 'react';
+import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 
 const PIECE_MAP = {
   [Color.White]: {
@@ -44,30 +39,47 @@ export const ChessPiece = ({
   const { x, y } = position;
   const piecePositionClassName = `chess-piece-${y}${x}`;
 
-  let [cursor, setCursor] = useState('cursor-grab');
+  const draggableRef = React.useRef<Draggable>(null);
 
   const handleGrabStart = (
     e: DraggableEvent,
     data: DraggableData
   ): void | false => {
-    setCursor('cursor-grabbing');
+    if (draggableRef.current) {
+      const middle = data.node.offsetWidth / 2;
+      draggableRef.current.setState({
+        x: -middle + (e as React.MouseEvent).nativeEvent.offsetX,
+        y: -middle + (e as React.MouseEvent).nativeEvent.offsetY
+      });
+    }
   };
+
+  const handleDrag = (
+    e: DraggableEvent,
+    data: DraggableData
+  ): void | false => {};
 
   const handleGrabStop = (
     e: DraggableEvent,
     data: DraggableData
   ): void | false => {
-    setCursor('cursor-grab');
+    if (draggableRef.current) {
+      draggableRef.current.setState({ x: 0, y: 0 });
+    }
   };
 
   return (
     <Draggable
       onStart={handleGrabStart}
+      onDrag={handleDrag}
       onStop={handleGrabStop}
       bounds="parent"
+      ref={draggableRef}
+      defaultClassName="z-10 cursor-grab"
+      defaultClassNameDragging="z-10 cursor-grabbing"
     >
       <div
-        className={`absolute w-1/8 h-1/8 ${piecePositionClassName} ${background} bg-cover ${cursor} caret-transparent`}
+        className={`absolute w-1/8 h-1/8 ${piecePositionClassName} ${background} bg-cover caret-transparent`}
       ></div>
     </Draggable>
   );

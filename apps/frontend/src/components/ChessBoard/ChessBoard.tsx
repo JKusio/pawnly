@@ -1,5 +1,6 @@
 import { ChessBoard } from 'lib/chess/board/ChessBoard';
 import { ChessPiece } from './ChessPiece';
+import HoverSquare from './HoverSquare';
 
 const ChessBoardComponent = () => {
   const chessBoard = new ChessBoard();
@@ -20,6 +21,7 @@ const ChessBoardComponent = () => {
           }
         })
       )}
+      <HoverSquare />
     </div>
   );
 };
