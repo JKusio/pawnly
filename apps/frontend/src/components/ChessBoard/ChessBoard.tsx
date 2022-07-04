@@ -22,7 +22,7 @@ const ChessBoardComponent = () => {
               <ChessPiece
                 chessPiece={square}
                 setHoverState={setHoverState}
-                key={`piece-${y}-${x}`}
+                key={`piece-${square.square}`}
               />
             );
           }

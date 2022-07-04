@@ -2,6 +2,7 @@ import { PieceType } from 'chess.js';
 import { ChessPiece, PieceColor } from 'lib/chess/ChessInterface';
 import React from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
+import { getBoardSquare } from 'utils/chess';
 
 const PIECE_MAP = {
   ['w']: {
@@ -59,10 +60,13 @@ const ChessPieceComponent = ({
     const offsetLeft = data.node.offsetLeft;
     const offsetTop = data.node.offsetTop;
 
-    const x = Math.floor((offsetLeft + data.x + middle) / squareSize);
+    const x = 7 - Math.floor((offsetLeft + data.x + middle) / squareSize);
     const y = 7 - Math.floor((offsetTop + data.y + middle) / squareSize);
 
-    setHoverState({ visible: 'visible', position: `board-position-${y}${x}` });
+    setHoverState({
+      visible: 'visible',
+      position: `board-position-${getBoardSquare(x, y)}`
+    });
   };
 
   const handleGrabStop = (
@@ -73,7 +77,7 @@ const ChessPieceComponent = ({
       draggableRef.current.setState({ x: 0, y: 0 });
     }
 
-    setHoverState({ visible: 'invisible', position: 'board-position-00' });
+    setHoverState({ visible: 'invisible', position: `board-position-a1` });
   };
 
   return (
