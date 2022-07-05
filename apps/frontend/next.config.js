@@ -2,7 +2,7 @@
 module.exports = {
   reactStrictMode: false,
   images: {
-    domains: ['localhost', 'ksmzg.type.pl']
+    domains: ['localhost']
   },
   localeDetection: false
 };

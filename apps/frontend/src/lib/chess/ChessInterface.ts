@@ -28,4 +28,10 @@ export class ChessInterface {
   public move(move: Move): Move | null {
     return this.chess.move(move);
   }
+
+  public getPieces(): ChessPiece[] {
+
+
+    return [];
+  }
 }

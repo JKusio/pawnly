@@ -1,6 +1,6 @@
 import { PieceType } from 'chess.js';
 import { ChessPiece, PieceColor } from 'lib/chess/ChessInterface';
-import React from 'react';
+import React, { memo, useEffect } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { getBoardSquare } from 'utils/chess';
 
@@ -27,13 +27,11 @@ const mapPieceToImage = (type: PieceType, color: PieceColor): string => {
   return PIECE_MAP[color][type];
 };
 
-const ChessPieceComponent = ({
+const ChessPieceComponent = memo(({
   chessPiece,
-  setHoverState,
   onMove
 }: {
   chessPiece: ChessPiece;
-  setHoverState: any;
   onMove: any;
 }) => {
   const background = mapPieceToImage(chessPiece.type, chessPiece.color);
@@ -45,6 +43,7 @@ const ChessPieceComponent = ({
     e: DraggableEvent,
     data: DraggableData
   ): void | false => {
+    console.log('xd')
     if (draggableRef.current) {
       const middle = data.node.offsetWidth / 2;
       draggableRef.current.setState({
@@ -69,10 +68,10 @@ const ChessPieceComponent = ({
   const handleDrag = (e: DraggableEvent, data: DraggableData): void | false => {
     const { x, y } = getCords(data);
 
-    setHoverState({
-      visible: 'visible',
-      position: `board-position-${getBoardSquare(x, y)}`
-    });
+    // setHoverState({
+    //   visible: 'visible',
+    //   position: `board-position-${getBoardSquare(x, y)}`
+    // });
   };
 
   const handleGrabStop = (
@@ -89,13 +88,13 @@ const ChessPieceComponent = ({
       draggableRef.current.setState({ x: 0, y: 0 });
     }
 
-    setHoverState({ visible: 'invisible', position: `board-position-a1` });
+    // setHoverState({ visible: 'invisible', position: `board-position-a1` });
   };
+
+
 
   return (
     <Draggable
-      onStart={handleGrabStart}
-      onDrag={handleDrag}
       onStop={handleGrabStop}
       bounds="parent"
       ref={draggableRef}
@@ -107,6 +106,6 @@ const ChessPieceComponent = ({
       ></div>
     </Draggable>
   );
-};
+});
 
 export default ChessPieceComponent;

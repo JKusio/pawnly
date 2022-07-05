@@ -4,9 +4,9 @@ import {
   ChessPiece as Piece,
   ChessSquare
 } from 'lib/chess/ChessInterface';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { getBoardSquare } from 'utils/chess';
-import ChessPiece from './ChessPiece';
+import ChessPiece from '../ChessPiece/ChessPiece';
 import HoverSquare, { HoverState } from './HoverSquare';
 
 const ChessBoardComponent = () => {
@@ -18,28 +18,42 @@ const ChessBoardComponent = () => {
     position: 'board-position-00'
   };
 
+  useEffect(() => {
+    console.log('crewted bord');
+  });
+
   const [hoverState, setHoverState] = useState(basicHoverState);
 
-  const onMove = (cords: { x: number; y: number }, piece: Piece): boolean => {
-    console.log(piece);
+  const onMove = useCallback(
+    (cords: { x: number; y: number }, piece: Piece) => {
+      const { x, y } = cords;
+      const to = getBoardSquare(x, y);
+      const moves = chessInterface.getMoves(piece.square);
 
-    const { x, y } = cords;
-    const to = getBoardSquare(x, y);
-    const moves = chessInterface.getMoves(piece.square);
-    console.log(to, moves);
+      const move = moves.find((move: Move) => move.to === to);
 
-    const move = moves.find((move: Move) => move.to === to);
+      if (move) {
+        chessInterface.move(move);
 
-    if (move) {
-      const moveMade = chessInterface.move(move);
-      if (moveMade) {
-        setBoard(chessInterface.getBoard());
+        const updatedBoard = chessInterface.getBoard();
+
+        setBoard((oldBoard: ChessSquare[][]) =>
+          oldBoard.map((row: ChessSquare[], x: number) =>
+            row.map((square: ChessSquare, y: number) =>
+              square?.color !== updatedBoard[x][y]?.color
+                ? updatedBoard[x][y]
+                : square
+            )
+          )
+        );
+
         return true;
       }
-    }
 
-    return false;
-  };
+      return false;
+    },
+    []
+  );
 
   return (
     <div className="w-full h-full bg-[url('https://images.chesscomfiles.com/chess-themes/boards/walnut/150.jpg')] bg-center bg-cover relative">
@@ -49,7 +63,6 @@ const ChessBoardComponent = () => {
             return (
               <ChessPiece
                 chessPiece={square}
-                setHoverState={setHoverState}
                 onMove={onMove}
                 key={`piece-${square.square}`}
               />
@@ -57,7 +70,10 @@ const ChessBoardComponent = () => {
           }
         })
       )}
-      <HoverSquare sharedHoverState={hoverState} />
+      {/* <HoverSquare
+        position={hoverState.position}
+        visible={hoverState.visible}
+      /> */}
     </div>
   );
 };

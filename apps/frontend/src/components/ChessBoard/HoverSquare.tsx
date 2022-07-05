@@ -6,13 +6,15 @@ export type HoverState = {
 };
 
 export const HoverSquare = ({
-  sharedHoverState
+  position,
+  visible
 }: {
-  sharedHoverState: HoverState;
+  position: string;
+  visible: string;
 }) => {
   return (
     <div
-      className={`w-1/8 h-1/8 border-4 border-white opacity-70 absolute ${sharedHoverState.position} ${sharedHoverState.visible}`}
+      className={`w-1/8 h-1/8 border-4 border-white opacity-70 absolute ${position} ${visible}`}
     ></div>
   );
 };
