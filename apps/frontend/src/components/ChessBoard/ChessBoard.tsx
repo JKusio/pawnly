@@ -55,6 +55,19 @@ const ChessBoardComponent = () => {
     []
   );
 
+  const onDrag = useCallback((position: string, visible: 'visible' | 'invisible') => {
+    setHoverState((oldState: HoverState) => {
+      if (oldState.position === position && oldState.visible === visible) {
+        return oldState;
+      }
+
+      return {
+        position,
+        visible
+      }
+    })
+  }, [hoverState])
+
   return (
     <div className="w-full h-full bg-[url('https://images.chesscomfiles.com/chess-themes/boards/walnut/150.jpg')] bg-center bg-cover relative">
       {board.map((row: ChessSquare[]) =>
@@ -64,16 +77,17 @@ const ChessBoardComponent = () => {
               <ChessPiece
                 chessPiece={square}
                 onMove={onMove}
+                setHoverState={onDrag}
                 key={`piece-${square.square}`}
               />
             );
           }
         })
       )}
-      {/* <HoverSquare
+      <HoverSquare
         position={hoverState.position}
         visible={hoverState.visible}
-      /> */}
+      />
     </div>
   );
 };

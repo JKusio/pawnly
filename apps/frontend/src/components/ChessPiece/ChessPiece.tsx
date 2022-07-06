@@ -29,10 +29,12 @@ const mapPieceToImage = (type: PieceType, color: PieceColor): string => {
 
 const ChessPieceComponent = memo(({
   chessPiece,
-  onMove
+  onMove,
+  setHoverState
 }: {
   chessPiece: ChessPiece;
   onMove: any;
+  setHoverState: any;
 }) => {
   const background = mapPieceToImage(chessPiece.type, chessPiece.color);
   const piecePositionClassName = `board-position-${chessPiece.square}`;
@@ -43,7 +45,6 @@ const ChessPieceComponent = memo(({
     e: DraggableEvent,
     data: DraggableData
   ): void | false => {
-    console.log('xd')
     if (draggableRef.current) {
       const middle = data.node.offsetWidth / 2;
       draggableRef.current.setState({
@@ -68,10 +69,10 @@ const ChessPieceComponent = memo(({
   const handleDrag = (e: DraggableEvent, data: DraggableData): void | false => {
     const { x, y } = getCords(data);
 
-    // setHoverState({
-    //   visible: 'visible',
-    //   position: `board-position-${getBoardSquare(x, y)}`
-    // });
+    setHoverState(
+      `board-position-${getBoardSquare(x, y)}`,
+      'visible'
+    );
   };
 
   const handleGrabStop = (
@@ -88,13 +89,15 @@ const ChessPieceComponent = memo(({
       draggableRef.current.setState({ x: 0, y: 0 });
     }
 
-    // setHoverState({ visible: 'invisible', position: `board-position-a1` });
+    setHoverState(`board-position-a1`, 'invisible');
   };
 
 
 
   return (
     <Draggable
+      onStart={handleGrabStart}
+      onDrag={handleDrag}
       onStop={handleGrabStop}
       bounds="parent"
       ref={draggableRef}
