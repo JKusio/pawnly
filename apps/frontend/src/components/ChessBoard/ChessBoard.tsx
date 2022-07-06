@@ -18,10 +18,6 @@ const ChessBoardComponent = () => {
     position: 'board-position-00'
   };
 
-  useEffect(() => {
-    console.log('crewted bord');
-  });
-
   const [hoverState, setHoverState] = useState(basicHoverState);
 
   const onMove = useCallback(
