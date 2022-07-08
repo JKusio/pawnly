@@ -1,14 +1,17 @@
 import { ChessPiece as Piece, ChessSquare } from 'lib/chess/ChessInterface';
-import React, { createRef, useEffect, useState } from 'react';
+import React, { createRef, useCallback, useEffect, useState } from 'react';
 import { DraggableData, DraggableEvent } from 'react-draggable';
+import { getPiecesFromBoard } from 'utils/chess';
 import ChessPiece from '../ChessPiece';
 import HoverSquare, { HoverState } from '../HoverSquare/HoverSquare';
 import { ChessboardParams } from './props';
 
 const ChessboardComponent = ({ board, onPieceDragStop }: ChessboardParams) => {
+  const [pieces, setPieces] = useState(getPiecesFromBoard(board));
+
   useEffect(() => {
-    console.log('Chessboard created');
-  });
+    setPieces(getPiecesFromBoard(board));
+  }, [board]);
 
   const boardRef = createRef<HTMLDivElement>();
 
@@ -25,7 +28,7 @@ const ChessboardComponent = ({ board, onPieceDragStop }: ChessboardParams) => {
     chessPiece: Piece
   ) => {
     if (onPieceDragStop) {
-      onPieceDragStop(e, data, chessPiece, boardRef);
+      return onPieceDragStop(e, data, chessPiece, boardRef);
     }
   };
 
@@ -81,19 +84,13 @@ const ChessboardComponent = ({ board, onPieceDragStop }: ChessboardParams) => {
       className="w-full h-full bg-[url('https://images.chesscomfiles.com/chess-themes/boards/walnut/150.jpg')] bg-center bg-cover relative"
       ref={boardRef}
     >
-      {board.map((row: ChessSquare[]) =>
-        row.map((square: ChessSquare) => {
-          if (square !== null) {
-            return (
-              <ChessPiece
-                chessPiece={square}
-                key={`piece-${square.square}`}
-                onDragStop={handlePieceDragStop}
-              />
-            );
-          }
-        })
-      )}
+      {pieces.map((piece: Piece) => (
+        <ChessPiece
+          chessPiece={piece}
+          key={`piece-${piece.square}`}
+          onDragStop={handlePieceDragStop}
+        />
+      ))}
       <HoverSquare
         position={hoverState.position}
         visible={hoverState.visible}

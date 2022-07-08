@@ -1,6 +1,6 @@
 import { PieceType } from 'chess.js';
 import { ChessPiece, PieceColor } from 'lib/chess/ChessInterface';
-import React, { memo, useEffect } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { getBoardSquare } from 'utils/chess';
 import { ChessPieceProps } from './props';
@@ -30,10 +30,6 @@ const mapPieceToImage = (type: PieceType, color: PieceColor): string => {
 
 const ChessPieceComponent = memo(
   ({ chessPiece, onDragStart, onDrag, onDragStop }: ChessPieceProps) => {
-    useEffect(() => {
-      console.log('Piece created');
-    });
-
     const background = mapPieceToImage(chessPiece.type, chessPiece.color);
     const piecePositionClassName = `board-position-${chessPiece.square}`;
 
@@ -46,6 +42,7 @@ const ChessPieceComponent = memo(
       if (draggableRef.current) {
         const middle = data.node.offsetWidth / 2;
         draggableRef.current.setState({
+          ...draggableRef.current.state,
           x: -middle + (e as React.MouseEvent).nativeEvent.offsetX,
           y: -middle + (e as React.MouseEvent).nativeEvent.offsetY
         });
@@ -82,14 +79,24 @@ const ChessPieceComponent = memo(
       data: DraggableData
     ): void | false => {
       if (onDragStop) {
-        onDragStop(e, data, chessPiece);
+        if (onDragStop(e, data, chessPiece) === false) {
+          return false;
+        } else {
+          if (draggableRef.current) {
+            draggableRef.current.setState({
+              ...draggableRef.current.state,
+              x: 0,
+              y: 0
+            });
+          }
+        }
       }
     };
 
     return (
       <Draggable
-        onStart={handleGrabStart}
-        onDrag={handleDrag}
+        // onStart={handleGrabStart}
+        // onDrag={handleDrag}
         onStop={handleGrabStop}
         bounds="parent"
         ref={draggableRef}

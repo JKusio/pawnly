@@ -6,7 +6,9 @@ export type ChessGame = {
 };
 
 export const useChessGame = (chessGame: Partial<ChessGame>) => {
-  const [chessInterface, setChessInterface] = useState(new ChessInterface());
+  const [chessInterface, setChessInterface] = useState(
+    () => new ChessInterface()
+  );
 
   useEffect(() => {
     return () => {
