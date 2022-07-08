@@ -1,19 +1,16 @@
-import { Move } from 'chess.js';
-import {
-  ChessInterface,
-  ChessPiece as Piece,
-  ChessSquare
-} from 'lib/chess/ChessInterface';
-import React, { useCallback, useEffect, useState } from 'react';
-import { getBoardSquare } from 'utils/chess';
+import { ChessPiece as Piece, ChessSquare } from 'lib/chess/ChessInterface';
+import React, { createRef, useEffect, useState } from 'react';
+import { DraggableData, DraggableEvent } from 'react-draggable';
 import ChessPiece from '../ChessPiece';
 import HoverSquare, { HoverState } from '../HoverSquare/HoverSquare';
 import { ChessboardParams } from './props';
 
-const ChessboardComponent = ({ board }: ChessboardParams) => {
+const ChessboardComponent = ({ board, onPieceDragStop }: ChessboardParams) => {
   useEffect(() => {
     console.log('Chessboard created');
   });
+
+  const boardRef = createRef<HTMLDivElement>();
 
   const basicHoverState: HoverState = {
     visible: 'invisible',
@@ -21,6 +18,16 @@ const ChessboardComponent = ({ board }: ChessboardParams) => {
   };
 
   const [hoverState, setHoverState] = useState(basicHoverState);
+
+  const handlePieceDragStop = (
+    e: DraggableEvent,
+    data: DraggableData,
+    chessPiece: Piece
+  ) => {
+    if (onPieceDragStop) {
+      onPieceDragStop(e, data, chessPiece, boardRef);
+    }
+  };
 
   // const onMove = useCallback(
   //   (cords: { x: number; y: number }, piece: Piece) => {
@@ -70,12 +77,19 @@ const ChessboardComponent = ({ board }: ChessboardParams) => {
   // );
 
   return (
-    <div className="w-full h-full bg-[url('https://images.chesscomfiles.com/chess-themes/boards/walnut/150.jpg')] bg-center bg-cover relative">
+    <div
+      className="w-full h-full bg-[url('https://images.chesscomfiles.com/chess-themes/boards/walnut/150.jpg')] bg-center bg-cover relative"
+      ref={boardRef}
+    >
       {board.map((row: ChessSquare[]) =>
         row.map((square: ChessSquare) => {
           if (square !== null) {
             return (
-              <ChessPiece chessPiece={square} key={`piece-${square.square}`} />
+              <ChessPiece
+                chessPiece={square}
+                key={`piece-${square.square}`}
+                onDragStop={handlePieceDragStop}
+              />
             );
           }
         })
