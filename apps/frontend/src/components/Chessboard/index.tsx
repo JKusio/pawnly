@@ -6,9 +6,9 @@ import {
 } from 'lib/chess/ChessInterface';
 import React, { useCallback, useEffect, useState } from 'react';
 import { getBoardSquare } from 'utils/chess';
-import ChessPiece from '../ChessPiece/ChessPiece';
+import ChessPiece from '../ChessPiece';
 import HoverSquare, { HoverState } from '../HoverSquare/HoverSquare';
-import { ChessboardParams } from './params';
+import { ChessboardParams } from './props';
 
 const ChessboardComponent = ({ board }: ChessboardParams) => {
   useEffect(() => {
@@ -75,12 +75,7 @@ const ChessboardComponent = ({ board }: ChessboardParams) => {
         row.map((square: ChessSquare) => {
           if (square !== null) {
             return (
-              <ChessPiece
-                chessPiece={square}
-                onMove={() => {}}
-                setHoverState={() => {}}
-                key={`piece-${square.square}`}
-              />
+              <ChessPiece chessPiece={square} key={`piece-${square.square}`} />
             );
           }
         })

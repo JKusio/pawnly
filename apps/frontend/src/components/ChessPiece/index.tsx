@@ -3,6 +3,7 @@ import { ChessPiece, PieceColor } from 'lib/chess/ChessInterface';
 import React, { memo, useEffect } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { getBoardSquare } from 'utils/chess';
+import { ChessPieceProps } from './props';
 
 const PIECE_MAP = {
   ['w']: {
@@ -28,15 +29,7 @@ const mapPieceToImage = (type: PieceType, color: PieceColor): string => {
 };
 
 const ChessPieceComponent = memo(
-  ({
-    chessPiece,
-    onMove,
-    setHoverState
-  }: {
-    chessPiece: ChessPiece;
-    onMove: any;
-    setHoverState: any;
-  }) => {
+  ({ chessPiece, onDragStart, onDrag, onDragStop }: ChessPieceProps) => {
     useEffect(() => {
       console.log('Piece created');
     });
@@ -57,44 +50,40 @@ const ChessPieceComponent = memo(
           y: -middle + (e as React.MouseEvent).nativeEvent.offsetY
         });
       }
+
+      if (onDragStart) {
+        onDragStart(e, data, chessPiece);
+      }
     };
 
-    const getCords = (data: DraggableData): { x: number; y: number } => {
-      const middle = data.node.offsetWidth / 2;
-      const squareSize = (data.node.parentElement?.clientWidth || 0) / 8;
-      const offsetLeft = data.node.offsetLeft;
-      const offsetTop = data.node.offsetTop;
+    // const getCords = (data: DraggableData): { x: number; y: number } => {
+    //   const middle = data.node.offsetWidth / 2;
+    //   const squareSize = (data.node.parentElement?.clientWidth || 0) / 8;
+    //   const offsetLeft = data.node.offsetLeft;
+    //   const offsetTop = data.node.offsetTop;
 
-      const x = Math.floor((offsetLeft + data.x + middle) / squareSize);
-      const y = 7 - Math.floor((offsetTop + data.y + middle) / squareSize);
+    //   const x = Math.floor((offsetLeft + data.x + middle) / squareSize);
+    //   const y = 7 - Math.floor((offsetTop + data.y + middle) / squareSize);
 
-      return { x, y };
-    };
+    //   return { x, y };
+    // };
 
     const handleDrag = (
       e: DraggableEvent,
       data: DraggableData
     ): void | false => {
-      const { x, y } = getCords(data);
-
-      setHoverState(`board-position-${getBoardSquare(x, y)}`, 'visible');
+      if (onDrag) {
+        onDrag(e, data, chessPiece);
+      }
     };
 
     const handleGrabStop = (
       e: DraggableEvent,
       data: DraggableData
     ): void | false => {
-      const cords = getCords(data);
-
-      if (onMove(cords, chessPiece)) {
-        return false;
+      if (onDragStop) {
+        onDragStop(e, data, chessPiece);
       }
-
-      if (draggableRef.current) {
-        draggableRef.current.setState({ x: 0, y: 0 });
-      }
-
-      setHoverState(`board-position-a1`, 'invisible');
     };
 
     return (
