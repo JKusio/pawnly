@@ -14,6 +14,7 @@ export class ChessInterface {
   private chess: ChessInstance;
 
   constructor() {
+    console.log('new instance');
     this.chess = new Chess();
   }
 
@@ -30,8 +31,6 @@ export class ChessInterface {
   }
 
   public getPieces(): ChessPiece[] {
-
-
     return [];
   }
 }

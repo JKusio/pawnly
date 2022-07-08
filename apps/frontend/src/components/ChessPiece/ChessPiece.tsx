@@ -27,88 +27,92 @@ const mapPieceToImage = (type: PieceType, color: PieceColor): string => {
   return PIECE_MAP[color][type];
 };
 
-const ChessPieceComponent = memo(({
-  chessPiece,
-  onMove,
-  setHoverState
-}: {
-  chessPiece: ChessPiece;
-  onMove: any;
-  setHoverState: any;
-}) => {
-  const background = mapPieceToImage(chessPiece.type, chessPiece.color);
-  const piecePositionClassName = `board-position-${chessPiece.square}`;
+const ChessPieceComponent = memo(
+  ({
+    chessPiece,
+    onMove,
+    setHoverState
+  }: {
+    chessPiece: ChessPiece;
+    onMove: any;
+    setHoverState: any;
+  }) => {
+    useEffect(() => {
+      console.log('Piece created');
+    });
 
-  const draggableRef = React.useRef<Draggable>(null);
+    const background = mapPieceToImage(chessPiece.type, chessPiece.color);
+    const piecePositionClassName = `board-position-${chessPiece.square}`;
 
-  const handleGrabStart = (
-    e: DraggableEvent,
-    data: DraggableData
-  ): void | false => {
-    if (draggableRef.current) {
+    const draggableRef = React.useRef<Draggable>(null);
+
+    const handleGrabStart = (
+      e: DraggableEvent,
+      data: DraggableData
+    ): void | false => {
+      if (draggableRef.current) {
+        const middle = data.node.offsetWidth / 2;
+        draggableRef.current.setState({
+          x: -middle + (e as React.MouseEvent).nativeEvent.offsetX,
+          y: -middle + (e as React.MouseEvent).nativeEvent.offsetY
+        });
+      }
+    };
+
+    const getCords = (data: DraggableData): { x: number; y: number } => {
       const middle = data.node.offsetWidth / 2;
-      draggableRef.current.setState({
-        x: -middle + (e as React.MouseEvent).nativeEvent.offsetX,
-        y: -middle + (e as React.MouseEvent).nativeEvent.offsetY
-      });
-    }
-  };
+      const squareSize = (data.node.parentElement?.clientWidth || 0) / 8;
+      const offsetLeft = data.node.offsetLeft;
+      const offsetTop = data.node.offsetTop;
 
-  const getCords = (data: DraggableData): { x: number; y: number } => {
-    const middle = data.node.offsetWidth / 2;
-    const squareSize = (data.node.parentElement?.clientWidth || 0) / 8;
-    const offsetLeft = data.node.offsetLeft;
-    const offsetTop = data.node.offsetTop;
+      const x = Math.floor((offsetLeft + data.x + middle) / squareSize);
+      const y = 7 - Math.floor((offsetTop + data.y + middle) / squareSize);
 
-    const x = Math.floor((offsetLeft + data.x + middle) / squareSize);
-    const y = 7 - Math.floor((offsetTop + data.y + middle) / squareSize);
+      return { x, y };
+    };
 
-    return { x, y };
-  };
+    const handleDrag = (
+      e: DraggableEvent,
+      data: DraggableData
+    ): void | false => {
+      const { x, y } = getCords(data);
 
-  const handleDrag = (e: DraggableEvent, data: DraggableData): void | false => {
-    const { x, y } = getCords(data);
+      setHoverState(`board-position-${getBoardSquare(x, y)}`, 'visible');
+    };
 
-    setHoverState(
-      `board-position-${getBoardSquare(x, y)}`,
-      'visible'
+    const handleGrabStop = (
+      e: DraggableEvent,
+      data: DraggableData
+    ): void | false => {
+      const cords = getCords(data);
+
+      if (onMove(cords, chessPiece)) {
+        return false;
+      }
+
+      if (draggableRef.current) {
+        draggableRef.current.setState({ x: 0, y: 0 });
+      }
+
+      setHoverState(`board-position-a1`, 'invisible');
+    };
+
+    return (
+      <Draggable
+        onStart={handleGrabStart}
+        onDrag={handleDrag}
+        onStop={handleGrabStop}
+        bounds="parent"
+        ref={draggableRef}
+        defaultClassName="z-10 cursor-grab"
+        defaultClassNameDragging="z-10 cursor-grabbing"
+      >
+        <div
+          className={`absolute w-1/8 h-1/8 ${piecePositionClassName} ${background} bg-cover caret-transparent`}
+        ></div>
+      </Draggable>
     );
-  };
-
-  const handleGrabStop = (
-    e: DraggableEvent,
-    data: DraggableData
-  ): void | false => {
-    const cords = getCords(data);
-
-    if (onMove(cords, chessPiece)) {
-      return false;
-    }
-
-    if (draggableRef.current) {
-      draggableRef.current.setState({ x: 0, y: 0 });
-    }
-
-    setHoverState(`board-position-a1`, 'invisible');
-  };
-
-
-
-  return (
-    <Draggable
-      onStart={handleGrabStart}
-      onDrag={handleDrag}
-      onStop={handleGrabStop}
-      bounds="parent"
-      ref={draggableRef}
-      defaultClassName="z-10 cursor-grab"
-      defaultClassNameDragging="z-10 cursor-grabbing"
-    >
-      <div
-        className={`absolute w-1/8 h-1/8 ${piecePositionClassName} ${background} bg-cover caret-transparent`}
-      ></div>
-    </Draggable>
-  );
-});
+  }
+);
 
 export default ChessPieceComponent;
