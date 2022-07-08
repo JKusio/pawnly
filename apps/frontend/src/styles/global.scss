@@ -3,6 +3,10 @@
 @tailwind utilities;
 @import 'normalize.scss';
 
+.bg-dark {
+  background-color: #312e2b;
+}
+
 .w-1\/8 {
   width: 12.5%;
 }
