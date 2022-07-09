@@ -2,11 +2,13 @@ import Chessboard from 'components/Chessboard';
 import { ChessboardCallbackParams } from 'components/Chessboard/props';
 import { ChessPieceCallbackParams } from 'components/ChessPiece/props';
 import ChessPieceRow from 'components/ChessPieceRow';
+import { HoverState } from 'components/HoverSquare';
 import { useChessboardVisualization } from 'hooks';
 import { useRef, useState } from 'react';
 import {
   calculateBoardCords,
   getBoardSquare,
+  getChessSquareClass,
   getCordsFromSquare
 } from 'utils/chess';
 
@@ -35,7 +37,6 @@ const ChessboardVisualization = () => {
 
   const onChessboardPieceDragStop = ({
     data,
-    boardRef,
     chessPiece
   }: ChessboardCallbackParams) => {
     if (!chessPiece.square) {
@@ -81,11 +82,12 @@ const ChessboardVisualization = () => {
           />
         </div>
       </div>
-      <div className="w-[640px] h-[640px]" ref={boardRef}>
+      <div className="w-[640px] h-[640px]">
         <Chessboard
           board={memorizedBoard}
           onPieceDragStop={onChessboardPieceDragStop}
           pieceBound={false}
+          ref={boardRef}
         />
       </div>
       <div className="w-[640px] flex justify-around my-4 relative">

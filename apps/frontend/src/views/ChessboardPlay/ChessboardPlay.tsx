@@ -3,7 +3,7 @@ import Chessboard from 'components/Chessboard';
 import { ChessboardCallbackParams } from 'components/Chessboard/props';
 import { BASIC_HOVER_STATE, HoverState } from 'components/HoverSquare';
 import { useChessGame } from 'hooks/useChessGame';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   calculateBoardCords,
   getBoardSquare,
@@ -13,6 +13,7 @@ import {
 const ChessboardPlay = () => {
   const [chessGame, setChessGame] = useState({});
   const { chessInterface } = useChessGame(chessGame);
+  const boardRef = useRef<HTMLDivElement>(null);
 
   const makeMove = (from: Square, to: Square): boolean => {
     const moves = chessInterface.getMoves(from);
@@ -28,11 +29,7 @@ const ChessboardPlay = () => {
     return true;
   };
 
-  const onPieceDrag = ({
-    data,
-    boardRef,
-    setHoverState
-  }: ChessboardCallbackParams) => {
+  const onPieceDrag = ({ data, setHoverState }: ChessboardCallbackParams) => {
     const cords = calculateBoardCords(data, boardRef);
 
     if (!cords) {
@@ -49,7 +46,6 @@ const ChessboardPlay = () => {
 
   const onPieceDragStop = ({
     data,
-    boardRef,
     chessPiece,
     setHoverState
   }: ChessboardCallbackParams) => {

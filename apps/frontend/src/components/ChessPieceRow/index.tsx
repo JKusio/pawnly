@@ -10,8 +10,15 @@ const ChessPieceRow = ({
   color,
   pieceClassName,
   disabled,
+  onPieceDrag,
   onPieceDragStop
 }: ChessPieceRowProps) => {
+  const handlePieceDrag = (data: ChessPieceCallbackParams) => {
+    if (onPieceDrag) {
+      return onPieceDrag(data);
+    }
+  };
+
   const handlePieceDragStop = (data: ChessPieceCallbackParams) => {
     if (onPieceDragStop) {
       return onPieceDragStop(data);
@@ -26,6 +33,7 @@ const ChessPieceRow = ({
           className={pieceClassName}
           bounds={false}
           key={`chess-piece-row-${color}-${type}`}
+          onDrag={handlePieceDrag}
           onDragStop={handlePieceDragStop}
           disabled={disabled}
         />
