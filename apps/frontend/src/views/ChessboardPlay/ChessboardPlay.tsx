@@ -12,6 +12,7 @@ import {
 
 const ChessboardPlay = () => {
   const [chessGame, setChessGame] = useState({});
+  const [hoverState, setHoverState] = useState(BASIC_HOVER_STATE);
   const { chessInterface } = useChessGame(chessGame);
   const boardRef = useRef<HTMLDivElement>(null);
 
@@ -29,7 +30,7 @@ const ChessboardPlay = () => {
     return true;
   };
 
-  const onPieceDrag = ({ data, setHoverState }: ChessboardCallbackParams) => {
+  const onPieceDrag = ({ data }: ChessboardCallbackParams) => {
     const cords = calculateBoardCords(data, boardRef);
 
     if (!cords) {
@@ -44,11 +45,7 @@ const ChessboardPlay = () => {
     );
   };
 
-  const onPieceDragStop = ({
-    data,
-    chessPiece,
-    setHoverState
-  }: ChessboardCallbackParams) => {
+  const onPieceDragStop = ({ data, chessPiece }: ChessboardCallbackParams) => {
     if (!chessPiece.square) {
       return;
     }
@@ -74,6 +71,7 @@ const ChessboardPlay = () => {
       <div className="w-[640px] h-[640px]">
         <Chessboard
           board={chessInterface.getBoard()}
+          hoverState={hoverState}
           onPieceDrag={onPieceDrag}
           onPieceDragStop={onPieceDragStop}
           ref={boardRef}

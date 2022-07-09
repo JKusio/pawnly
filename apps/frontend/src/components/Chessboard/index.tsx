@@ -11,6 +11,7 @@ const Chessboard = forwardRef(
     {
       board,
       pieceBound,
+      hoverState = BASIC_HOVER_STATE,
       onPieceDragStart,
       onPieceDrag,
       onPieceDragStop
@@ -18,7 +19,6 @@ const Chessboard = forwardRef(
     ref: ForwardedRef<HTMLDivElement>
   ) => {
     const pieces = getPiecesFromBoard(board);
-    const [hoverState, setHoverState] = useState(BASIC_HOVER_STATE);
 
     const handlePieceDragStart = ({
       e,
@@ -29,8 +29,7 @@ const Chessboard = forwardRef(
         return onPieceDragStart({
           e,
           data,
-          chessPiece,
-          setHoverState
+          chessPiece
         });
       }
     };
@@ -41,7 +40,7 @@ const Chessboard = forwardRef(
       chessPiece
     }: ChessPieceCallbackParams) => {
       if (onPieceDrag) {
-        return onPieceDrag({ e, data, chessPiece, setHoverState });
+        return onPieceDrag({ e, data, chessPiece });
       }
     };
 
@@ -54,8 +53,7 @@ const Chessboard = forwardRef(
         return onPieceDragStop({
           e,
           data,
-          chessPiece,
-          setHoverState
+          chessPiece
         });
       }
     };
