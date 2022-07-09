@@ -1,15 +1,12 @@
 import Chessboard from 'components/Chessboard';
 import { ChessboardCallbackParams } from 'components/Chessboard/props';
-import ChessPiece from 'components/ChessPiece';
 import { ChessPieceCallbackParams } from 'components/ChessPiece/props';
 import ChessPieceRow from 'components/ChessPieceRow';
-import { ChessVisualization, useChessboardVisualization } from 'hooks';
-import { ChessInterface, ChessSquare } from 'lib/chess/ChessInterface';
-import { createRef, RefObject, useState } from 'react';
+import { useChessboardVisualization } from 'hooks';
+import { useRef, useState } from 'react';
 import {
   calculateBoardCords,
   getBoardSquare,
-  getChessSquareClass,
   getCordsFromSquare
 } from 'utils/chess';
 
@@ -20,7 +17,7 @@ const ChessboardVisualization = () => {
   const [boardVisualization, setBoardVisualization] = useState({});
   const { memorizedBoard } = useChessboardVisualization(boardVisualization);
 
-  const boardRef = createRef<HTMLDivElement>();
+  const boardRef = useRef<HTMLDivElement>(null);
 
   const onPieceDragStop = ({ data, chessPiece }: ChessPieceCallbackParams) => {
     const cords = calculateBoardCords(data, boardRef);

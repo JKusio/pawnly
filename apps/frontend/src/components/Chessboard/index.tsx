@@ -1,7 +1,6 @@
 import { ChessPieceCallbackParams } from 'components/ChessPiece/props';
 import { ChessPiece as Piece } from 'lib/chess/ChessInterface';
-import React, { createRef, useEffect, useState } from 'react';
-import { DraggableData, DraggableEvent } from 'react-draggable';
+import React, { useRef, useState } from 'react';
 import { getChessSquareClass, getPiecesFromBoard } from 'utils/chess';
 import ChessPiece from '../ChessPiece';
 import HoverSquare, { BASIC_HOVER_STATE } from '../HoverSquare';
@@ -16,7 +15,7 @@ const Chessboard = ({
 }: ChessboardProps) => {
   const pieces = getPiecesFromBoard(board);
 
-  const boardRef = createRef<HTMLDivElement>();
+  const boardRef = useRef<HTMLDivElement>(null);
 
   const [hoverState, setHoverState] = useState(BASIC_HOVER_STATE);
 
