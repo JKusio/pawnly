@@ -76,6 +76,7 @@ const ChessboardPlay = () => {
           board={chessInterface.getBoard()}
           onPieceDrag={onPieceDrag}
           onPieceDragStop={onPieceDragStop}
+          ref={boardRef}
         />
       </div>
     </div>
