@@ -6,7 +6,7 @@ import ChessPiece from '../ChessPiece';
 import HoverSquare, { BASIC_HOVER_STATE } from '../HoverSquare';
 import { ChessboardProps } from './props';
 
-const ChessboardComponent = ({
+const Chessboard = ({
   board,
   onPieceDragStart,
   onPieceDrag,
@@ -74,4 +74,4 @@ const ChessboardComponent = ({
   );
 };
 
-export default ChessboardComponent;
+export default Chessboard;

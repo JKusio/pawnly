@@ -13,8 +13,12 @@ export type ChessSquare = ChessPiece | null;
 export class ChessInterface {
   private chess: ChessInstance;
 
-  constructor() {
+  constructor(pgn?: string) {
     this.chess = new Chess();
+
+    if (pgn) {
+      this.chess.load_pgn(pgn);
+    }
   }
 
   public getBoard(): ChessSquare[][] {
