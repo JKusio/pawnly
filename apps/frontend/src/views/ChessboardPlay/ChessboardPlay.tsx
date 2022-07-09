@@ -53,6 +53,10 @@ const ChessboardPlay = () => {
     chessPiece,
     setHoverState
   }: ChessboardCallbackParams) => {
+    if (!chessPiece.square) {
+      return;
+    }
+
     const cords = calculateBoardCords(data, boardRef);
 
     if (!cords) {
