@@ -61,9 +61,10 @@ const ChessboardPlay = () => {
 
     const to = getBoardSquare(cords.x, cords.y);
 
+    setHoverState(BASIC_HOVER_STATE);
+
     if (makeMove(chessPiece.square, to)) {
       setChessGame({ chessInterface });
-      setHoverState(BASIC_HOVER_STATE);
       return false;
     }
   };

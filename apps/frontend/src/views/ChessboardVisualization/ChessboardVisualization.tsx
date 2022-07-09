@@ -17,6 +17,13 @@ const ChessboardVisualization = () => {
 
   return (
     <div className="flex w-screen h-screen justify-center items-center flex-col">
+      <div className="w-[640px] flex justify-around">
+        <ChessPiece
+          chessPiece={{ color: 'b', square: 'a1', type: 'b' }}
+          className={'w-[64px] h-[64px]'}
+          bounds={false}
+        />
+      </div>
       <div className="w-[640px] h-[640px]">
         <Chessboard board={chessInterface.getBoard()} />
       </div>

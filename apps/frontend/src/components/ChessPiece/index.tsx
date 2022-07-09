@@ -30,6 +30,7 @@ const mapPieceToImage = (type: PieceType, color: PieceColor): string => {
 const ChessPieceComponent = memo(
   ({
     chessPiece,
+    bounds = 'parent',
     className,
     onDragStart,
     onDrag,
@@ -73,15 +74,15 @@ const ChessPieceComponent = memo(
       if (onDragStop) {
         if (onDragStop(e, data, chessPiece) === false) {
           return false;
-        } else {
-          if (draggableRef.current) {
-            draggableRef.current.setState({
-              ...draggableRef.current.state,
-              x: 0,
-              y: 0
-            });
-          }
         }
+      }
+
+      if (draggableRef.current) {
+        draggableRef.current.setState({
+          ...draggableRef.current.state,
+          x: 0,
+          y: 0
+        });
       }
     };
 
@@ -90,7 +91,7 @@ const ChessPieceComponent = memo(
         onStart={handleGrabStart}
         onDrag={handleDrag}
         onStop={handleGrabStop}
-        bounds="parent"
+        bounds={bounds}
         ref={draggableRef}
         defaultClassName="z-10 cursor-grab"
         defaultClassNameDragging="z-20 cursor-grabbing"
