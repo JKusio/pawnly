@@ -1,6 +1,6 @@
 import { PieceType } from 'chess.js';
 import { PieceColor } from 'lib/chess/ChessInterface';
-import React, { memo } from 'react';
+import React from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { ChessPieceProps } from './props';
 
@@ -27,7 +27,7 @@ const mapPieceToImage = (type: PieceType, color: PieceColor): string => {
   return PIECE_MAP[color][type];
 };
 
-const ChessPieceComponent = ({
+const ChessPiece = ({
   chessPiece,
   bounds = 'parent',
   className,
@@ -99,4 +99,4 @@ const ChessPieceComponent = ({
   );
 };
 
-export default ChessPieceComponent;
+export default ChessPiece;
