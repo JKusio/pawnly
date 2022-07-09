@@ -3,7 +3,7 @@ import { PieceColor } from 'lib/chess/ChessInterface';
 
 export type ChessPieceRowProps = {
   color: PieceColor;
-  pieceSize: string;
+  pieceClassName: string;
   disabled?: boolean;
   onPieceDragStop?: (data: ChessPieceCallbackParams) => void | false;
 };

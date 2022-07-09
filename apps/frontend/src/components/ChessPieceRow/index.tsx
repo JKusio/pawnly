@@ -8,7 +8,7 @@ const TYPES: PieceType[] = ['k', 'q', 'r', 'n', 'b', 'p'];
 
 const ChessPieceRow = ({
   color,
-  pieceSize,
+  pieceClassName,
   disabled,
   onPieceDragStop
 }: ChessPieceRowProps) => {
@@ -23,7 +23,7 @@ const ChessPieceRow = ({
       {TYPES.map((type: PieceType) => (
         <ChessPieceComponent
           chessPiece={{ color, type, square: null }}
-          className={pieceSize}
+          className={pieceClassName}
           bounds={false}
           key={`chess-piece-row-${color}-${type}`}
           onDragStop={handlePieceDragStop}

@@ -36,22 +36,36 @@ const ChessboardVisualization = () => {
 
   return (
     <div className="flex w-screen h-screen justify-center items-center flex-col">
-      <div className="w-[640px] flex justify-around my-4">
+      <div className="w-[640px] flex justify-around my-4 relative z-20">
         <ChessPieceRow
           color="b"
-          pieceSize="w-[80px] h-[80px]"
+          pieceClassName="w-[80px] h-[80px] z-20"
           onPieceDragStop={onPieceDragStop}
         />
+        <div className="w-full flex justify-around absolute z-10">
+          <ChessPieceRow
+            color="b"
+            pieceClassName="w-[80px] h-[80px] z-10"
+            disabled={true}
+          />
+        </div>
       </div>
       <div className="w-[640px] h-[640px]" ref={boardRef}>
         <Chessboard board={memorizedBoard} />
       </div>
-      <div className="w-[640px] flex justify-around my-4">
+      <div className="w-[640px] flex justify-around my-4 relative">
         <ChessPieceRow
           color="w"
-          pieceSize="w-[80px] h-[80px]"
+          pieceClassName="w-[80px] h-[80px] z-20"
           onPieceDragStop={onPieceDragStop}
         />
+        <div className="w-full flex justify-around absolute">
+          <ChessPieceRow
+            color="w"
+            pieceClassName="w-[80px] h-[80px] z-10"
+            disabled={true}
+          />
+        </div>
       </div>
     </div>
   );
