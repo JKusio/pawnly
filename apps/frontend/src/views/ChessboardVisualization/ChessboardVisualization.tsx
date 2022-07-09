@@ -1,14 +1,16 @@
 import Chessboard from 'components/Chessboard';
+import { ChessboardCallbackParams } from 'components/Chessboard/props';
 import ChessPiece from 'components/ChessPiece';
 import { ChessPieceCallbackParams } from 'components/ChessPiece/props';
 import ChessPieceRow from 'components/ChessPieceRow';
 import { ChessVisualization, useChessboardVisualization } from 'hooks';
-import { ChessInterface } from 'lib/chess/ChessInterface';
+import { ChessInterface, ChessSquare } from 'lib/chess/ChessInterface';
 import { createRef, RefObject, useState } from 'react';
 import {
   calculateBoardCords,
   getBoardSquare,
-  getChessSquareClass
+  getChessSquareClass,
+  getCordsFromSquare
 } from 'utils/chess';
 
 const PGN =
@@ -34,6 +36,38 @@ const ChessboardVisualization = () => {
     setBoardVisualization({ memorizedBoard });
   };
 
+  const onChessboardPieceDragStop = ({
+    data,
+    boardRef,
+    chessPiece
+  }: ChessboardCallbackParams) => {
+    if (!chessPiece.square) {
+      return;
+    }
+    const pieceCords = getCordsFromSquare(chessPiece.square);
+
+    if (!pieceCords) {
+      return;
+    }
+
+    const cords = calculateBoardCords(data, boardRef);
+
+    if (!cords) {
+      memorizedBoard[pieceCords.x][pieceCords.y] = null;
+      setBoardVisualization({ memorizedBoard });
+      return false;
+    }
+
+    const square = getBoardSquare(cords.x, cords.y);
+
+    memorizedBoard[pieceCords.x][pieceCords.y] = null;
+    memorizedBoard[cords.x][cords.y] = { ...chessPiece, square };
+
+    setBoardVisualization({ memorizedBoard });
+
+    return false;
+  };
+
   return (
     <div className="flex w-screen h-screen justify-center items-center flex-col">
       <div className="w-[640px] flex justify-around my-4 relative z-20">
@@ -51,7 +85,11 @@ const ChessboardVisualization = () => {
         </div>
       </div>
       <div className="w-[640px] h-[640px]" ref={boardRef}>
-        <Chessboard board={memorizedBoard} />
+        <Chessboard
+          board={memorizedBoard}
+          onPieceDragStop={onChessboardPieceDragStop}
+          pieceBound={false}
+        />
       </div>
       <div className="w-[640px] flex justify-around my-4 relative">
         <ChessPieceRow

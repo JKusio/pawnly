@@ -9,6 +9,7 @@ import { ChessboardProps } from './props';
 
 const Chessboard = ({
   board,
+  pieceBound,
   onPieceDragStart,
   onPieceDrag,
   onPieceDragStop
@@ -59,13 +60,14 @@ const Chessboard = ({
           piece.square && (
             <ChessPiece
               chessPiece={piece}
-              key={`piece-${piece.square}`}
+              bounds={pieceBound}
               onDragStart={handlePieceDragStart}
               onDrag={handlePieceDrag}
               onDragStop={handlePieceDragStop}
               className={`absolute w-1/8 h-1/8 ${getChessSquareClass(
                 piece.square
               )}`}
+              key={`piece-${piece.square}`}
             />
           )
       )}

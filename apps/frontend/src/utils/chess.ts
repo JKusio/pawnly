@@ -14,6 +14,18 @@ export const getBoardSquare = (x: number, y: number): Square => {
   return `${CHESS_COLUMNS[x]}${y + 1}` as Square;
 };
 
+export const getCordsFromSquare = (square?: Square): BoardCords | null => {
+  if (!square) {
+    return null;
+  }
+
+  const [column, row] = square.split('');
+  const x = CHESS_COLUMNS.findIndex((c: string) => c === column);
+  const y = parseInt(row) - 1;
+
+  return { x, y };
+};
+
 export const getChessSquareClass = (square: Square) => {
   return `board-position-${square}`;
 };
