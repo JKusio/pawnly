@@ -27,81 +27,76 @@ const mapPieceToImage = (type: PieceType, color: PieceColor): string => {
   return PIECE_MAP[color][type];
 };
 
-const ChessPieceComponent = memo(
-  ({
-    chessPiece,
-    bounds = 'parent',
-    className,
-    onDragStart,
-    onDrag,
-    onDragStop
-  }: ChessPieceProps) => {
-    const background = mapPieceToImage(chessPiece.type, chessPiece.color);
+const ChessPieceComponent = ({
+  chessPiece,
+  bounds = 'parent',
+  className,
+  onDragStart,
+  onDrag,
+  onDragStop
+}: ChessPieceProps) => {
+  const background = mapPieceToImage(chessPiece.type, chessPiece.color);
 
-    const draggableRef = React.useRef<Draggable>(null);
+  const draggableRef = React.useRef<Draggable>(null);
 
-    const handleGrabStart = (
-      e: DraggableEvent,
-      data: DraggableData
-    ): void | false => {
-      if (draggableRef.current) {
-        const middle = data.node.offsetWidth / 2;
-        draggableRef.current.setState({
-          ...draggableRef.current.state,
-          x: -middle + (e as React.MouseEvent).nativeEvent.offsetX,
-          y: -middle + (e as React.MouseEvent).nativeEvent.offsetY
-        });
+  const handleGrabStart = (
+    e: DraggableEvent,
+    data: DraggableData
+  ): void | false => {
+    if (draggableRef.current) {
+      const middle = data.node.offsetWidth / 2;
+      draggableRef.current.setState({
+        ...draggableRef.current.state,
+        x: -middle + (e as React.MouseEvent).nativeEvent.offsetX,
+        y: -middle + (e as React.MouseEvent).nativeEvent.offsetY
+      });
+    }
+
+    if (onDragStart) {
+      onDragStart({ e, data, chessPiece });
+    }
+  };
+
+  const handleDrag = (e: DraggableEvent, data: DraggableData): void | false => {
+    if (onDrag) {
+      onDrag({ e, data, chessPiece });
+    }
+  };
+
+  const handleGrabStop = (
+    e: DraggableEvent,
+    data: DraggableData
+  ): void | false => {
+    if (onDragStop) {
+      if (onDragStop({ e, data, chessPiece }) === false) {
+        return false;
       }
+    }
 
-      if (onDragStart) {
-        onDragStart(e, data, chessPiece);
-      }
-    };
+    if (draggableRef.current) {
+      draggableRef.current.setState({
+        ...draggableRef.current.state,
+        x: 0,
+        y: 0
+      });
+    }
+  };
 
-    const handleDrag = (
-      e: DraggableEvent,
-      data: DraggableData
-    ): void | false => {
-      if (onDrag) {
-        onDrag(e, data, chessPiece);
-      }
-    };
-
-    const handleGrabStop = (
-      e: DraggableEvent,
-      data: DraggableData
-    ): void | false => {
-      if (onDragStop) {
-        if (onDragStop(e, data, chessPiece) === false) {
-          return false;
-        }
-      }
-
-      if (draggableRef.current) {
-        draggableRef.current.setState({
-          ...draggableRef.current.state,
-          x: 0,
-          y: 0
-        });
-      }
-    };
-
-    return (
-      <Draggable
-        onStart={handleGrabStart}
-        onDrag={handleDrag}
-        onStop={handleGrabStop}
-        bounds={bounds}
-        ref={draggableRef}
-        defaultClassName="z-10 cursor-grab"
-        defaultClassNameDragging="z-20 cursor-grabbing"
-      >
-        <div
-          className={`${className} ${background} bg-cover caret-transparent`}
-        ></div>
-      </Draggable>
-    );
-  }
-);
+  return (
+    <Draggable
+      onStart={handleGrabStart}
+      onDrag={handleDrag}
+      onStop={handleGrabStop}
+      bounds={bounds}
+      ref={draggableRef}
+      defaultClassName="z-10 cursor-grab"
+      defaultClassNameDragging="z-20 cursor-grabbing"
+    >
+      <div
+        className={`${className} ${background} bg-cover caret-transparent`}
+      ></div>
+    </Draggable>
+  );
+};
 
 export default ChessPieceComponent;

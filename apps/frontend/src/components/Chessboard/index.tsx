@@ -1,3 +1,4 @@
+import { ChessPieceCallbackParams } from 'components/ChessPiece/props';
 import { ChessPiece as Piece } from 'lib/chess/ChessInterface';
 import React, { createRef, useEffect, useState } from 'react';
 import { DraggableData, DraggableEvent } from 'react-draggable';
@@ -12,41 +13,37 @@ const Chessboard = ({
   onPieceDrag,
   onPieceDragStop
 }: ChessboardProps) => {
-  const [pieces, setPieces] = useState(getPiecesFromBoard(board));
-
-  useEffect(() => {
-    setPieces(getPiecesFromBoard(board));
-  }, [board]);
+  const pieces = getPiecesFromBoard(board);
 
   const boardRef = createRef<HTMLDivElement>();
 
   const [hoverState, setHoverState] = useState(BASIC_HOVER_STATE);
 
-  const handlePieceDragStart = (
-    e: DraggableEvent,
-    data: DraggableData,
-    chessPiece: Piece
-  ) => {
+  const handlePieceDragStart = ({
+    e,
+    data,
+    chessPiece
+  }: ChessPieceCallbackParams) => {
     if (onPieceDragStart) {
       return onPieceDragStart({ e, data, chessPiece, boardRef, setHoverState });
     }
   };
 
-  const handlePieceDrag = (
-    e: DraggableEvent,
-    data: DraggableData,
-    chessPiece: Piece
-  ) => {
+  const handlePieceDrag = ({
+    e,
+    data,
+    chessPiece
+  }: ChessPieceCallbackParams) => {
     if (onPieceDrag) {
       return onPieceDrag({ e, data, chessPiece, boardRef, setHoverState });
     }
   };
 
-  const handlePieceDragStop = (
-    e: DraggableEvent,
-    data: DraggableData,
-    chessPiece: Piece
-  ) => {
+  const handlePieceDragStop = ({
+    e,
+    data,
+    chessPiece
+  }: ChessPieceCallbackParams) => {
     if (onPieceDragStop) {
       return onPieceDragStop({ e, data, chessPiece, boardRef, setHoverState });
     }

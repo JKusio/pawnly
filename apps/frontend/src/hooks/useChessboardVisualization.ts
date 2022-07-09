@@ -1,20 +1,22 @@
-import { ChessInterface, ChessPiece } from 'lib/chess/ChessInterface';
+import { ChessInterface, ChessSquare } from 'lib/chess/ChessInterface';
 import { useEffect, useState } from 'react';
 
 export type ChessVisualization = {
   chessInterface: ChessInterface;
-  memorizedPieces: ChessPiece[];
+  memorizedBoard: ChessSquare[][];
 };
 
 export const useChessboardVisualization = (
   chessVisualization: Partial<ChessVisualization>
-) => {
+): ChessVisualization => {
   const [chessInterface, setChessInterface] = useState(() =>
     chessVisualization.chessInterface
       ? chessVisualization.chessInterface
       : new ChessInterface()
   );
-  const [memorizedPieces, setMemorizedPieces] = useState<ChessPiece[]>([]);
+  const [memorizedBoard, setMemorizedBoard] = useState(
+    Array.from(Array(8), (_) => Array(8).fill(null))
+  );
 
   useEffect(() => {
     return () => {
@@ -22,13 +24,14 @@ export const useChessboardVisualization = (
         setChessInterface(chessVisualization.chessInterface);
       }
 
-      if (chessVisualization.memorizedPieces) {
-        setMemorizedPieces(chessVisualization.memorizedPieces);
+      if (chessVisualization.memorizedBoard) {
+        setMemorizedBoard(chessVisualization.memorizedBoard);
       }
     };
   }, [chessVisualization]);
 
   return {
-    chessInterface
+    chessInterface,
+    memorizedBoard
   };
 };
