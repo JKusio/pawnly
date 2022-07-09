@@ -1,13 +1,18 @@
+import { HoverState } from 'components/HoverSquare';
 import { ChessPiece, ChessSquare } from 'lib/chess/ChessInterface';
-import { RefObject } from 'react';
+import { Dispatch, RefObject, SetStateAction } from 'react';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 
-export type ChessboardParams = {
+export type ChessboardProps = {
   board: ChessSquare[][];
-  onPieceDragStop?: (
-    e: DraggableEvent,
-    data: DraggableData,
-    chessPiece: ChessPiece,
-    boardRef: RefObject<HTMLDivElement>
-  ) => void | false;
+  onPieceDragStop?: (data: ChessboardCallbackParams) => void | false;
+  onPieceDrag?: (data: ChessboardCallbackParams) => void | false;
+};
+
+export type ChessboardCallbackParams = {
+  e: DraggableEvent;
+  data: DraggableData;
+  chessPiece: ChessPiece;
+  boardRef: RefObject<HTMLDivElement>;
+  setHoverState: Dispatch<SetStateAction<HoverState>>;
 };

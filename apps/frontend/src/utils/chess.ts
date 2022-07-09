@@ -14,6 +14,10 @@ export const getBoardSquare = (x: number, y: number): Square => {
   return `${CHESS_COLUMNS[x]}${y + 1}` as Square;
 };
 
+export const getChessSquareClass = (square: Square) => {
+  return `board-position-${square}`;
+};
+
 export const getPiecesFromBoard = (board: ChessSquare[][]): ChessPiece[] => {
   const pieces: ChessPiece[] = [];
 

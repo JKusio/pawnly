@@ -3,10 +3,14 @@ import React, { createRef, useCallback, useEffect, useState } from 'react';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 import { getPiecesFromBoard } from 'utils/chess';
 import ChessPiece from '../ChessPiece';
-import HoverSquare, { HoverState } from '../HoverSquare/HoverSquare';
-import { ChessboardParams } from './props';
+import HoverSquare, { BASIC_HOVER_STATE, HoverState } from '../HoverSquare';
+import { ChessboardProps } from './props';
 
-const ChessboardComponent = ({ board, onPieceDragStop }: ChessboardParams) => {
+const ChessboardComponent = ({
+  board,
+  onPieceDrag,
+  onPieceDragStop
+}: ChessboardProps) => {
   const [pieces, setPieces] = useState(getPiecesFromBoard(board));
 
   useEffect(() => {
@@ -15,12 +19,17 @@ const ChessboardComponent = ({ board, onPieceDragStop }: ChessboardParams) => {
 
   const boardRef = createRef<HTMLDivElement>();
 
-  const basicHoverState: HoverState = {
-    visible: 'invisible',
-    position: 'board-position-00'
-  };
+  const [hoverState, setHoverState] = useState(BASIC_HOVER_STATE);
 
-  const [hoverState, setHoverState] = useState(basicHoverState);
+  const handlePieceDrag = (
+    e: DraggableEvent,
+    data: DraggableData,
+    chessPiece: Piece
+  ) => {
+    if (onPieceDrag) {
+      return onPieceDrag({ e, data, chessPiece, boardRef, setHoverState });
+    }
+  };
 
   const handlePieceDragStop = (
     e: DraggableEvent,
@@ -28,56 +37,9 @@ const ChessboardComponent = ({ board, onPieceDragStop }: ChessboardParams) => {
     chessPiece: Piece
   ) => {
     if (onPieceDragStop) {
-      return onPieceDragStop(e, data, chessPiece, boardRef);
+      return onPieceDragStop({ e, data, chessPiece, boardRef, setHoverState });
     }
   };
-
-  // const onMove = useCallback(
-  //   (cords: { x: number; y: number }, piece: Piece) => {
-  //     const { x, y } = cords;
-  //     const to = getBoardSquare(x, y);
-  //     const moves = chessInterface.getMoves(piece.square);
-
-  //     const move = moves.find((move: Move) => move.to === to);
-
-  //     if (move) {
-  //       chessInterface.move(move);
-
-  //       const updatedBoard = chessInterface.getBoard();
-
-  //       setBoard((oldBoard: ChessSquare[][]) =>
-  //         oldBoard.map((row: ChessSquare[], x: number) =>
-  //           row.map((square: ChessSquare, y: number) =>
-  //             square?.color !== updatedBoard[x][y]?.color
-  //               ? updatedBoard[x][y]
-  //               : square
-  //           )
-  //         )
-  //       );
-
-  //       return true;
-  //     }
-
-  //     return false;
-  //   },
-  //   []
-  // );
-
-  // const onDrag = useCallback(
-  //   (position: string, visible: 'visible' | 'invisible') => {
-  //     setHoverState((oldState: HoverState) => {
-  //       if (oldState.position === position && oldState.visible === visible) {
-  //         return oldState;
-  //       }
-
-  //       return {
-  //         position,
-  //         visible
-  //       };
-  //     });
-  //   },
-  //   [hoverState]
-  // );
 
   return (
     <div
@@ -88,6 +50,7 @@ const ChessboardComponent = ({ board, onPieceDragStop }: ChessboardParams) => {
         <ChessPiece
           chessPiece={piece}
           key={`piece-${piece.square}`}
+          onDrag={handlePieceDrag}
           onDragStop={handlePieceDragStop}
         />
       ))}

@@ -1,8 +1,8 @@
 import { PieceType } from 'chess.js';
-import { ChessPiece, PieceColor } from 'lib/chess/ChessInterface';
-import React, { memo, useCallback, useEffect } from 'react';
+import { PieceColor } from 'lib/chess/ChessInterface';
+import React, { memo } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
-import { getBoardSquare } from 'utils/chess';
+import { getChessSquareClass } from 'utils/chess';
 import { ChessPieceProps } from './props';
 
 const PIECE_MAP = {
@@ -31,7 +31,7 @@ const mapPieceToImage = (type: PieceType, color: PieceColor): string => {
 const ChessPieceComponent = memo(
   ({ chessPiece, onDragStart, onDrag, onDragStop }: ChessPieceProps) => {
     const background = mapPieceToImage(chessPiece.type, chessPiece.color);
-    const piecePositionClassName = `board-position-${chessPiece.square}`;
+    const piecePositionClassName = getChessSquareClass(chessPiece.square);
 
     const draggableRef = React.useRef<Draggable>(null);
 
@@ -83,8 +83,8 @@ const ChessPieceComponent = memo(
 
     return (
       <Draggable
-        // onStart={handleGrabStart}
-        // onDrag={handleDrag}
+        onStart={handleGrabStart}
+        onDrag={handleDrag}
         onStop={handleGrabStop}
         bounds="parent"
         ref={draggableRef}

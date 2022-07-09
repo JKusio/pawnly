@@ -1,10 +1,16 @@
 import { Move, Square } from 'chess.js';
 import Chessboard from 'components/Chessboard';
+import { ChessboardCallbackParams } from 'components/Chessboard/props';
+import { BASIC_HOVER_STATE, HoverState } from 'components/HoverSquare';
 import { ChessGame, useChessGame } from 'hooks/useChessGame';
 import { ChessPiece } from 'lib/chess/ChessInterface';
 import { RefObject, useCallback, useState } from 'react';
 import { DraggableData, DraggableEvent } from 'react-draggable';
-import { calculateBoardCords, getBoardSquare } from 'utils/chess';
+import {
+  calculateBoardCords,
+  getBoardSquare,
+  getChessSquareClass
+} from 'utils/chess';
 
 const ChessboardPlay = () => {
   const [chessGame, setChessGame] = useState({});
@@ -24,12 +30,31 @@ const ChessboardPlay = () => {
     return true;
   };
 
-  const onPieceDragStop = (
-    e: DraggableEvent,
-    data: DraggableData,
-    chessPiece: ChessPiece,
-    boardRef: RefObject<HTMLDivElement>
-  ) => {
+  const onPieceDrag = ({
+    data,
+    boardRef,
+    setHoverState
+  }: ChessboardCallbackParams) => {
+    const cords = calculateBoardCords(data, boardRef);
+
+    if (!cords) {
+      return;
+    }
+
+    const square = getBoardSquare(cords.x, cords.y);
+    const position = getChessSquareClass(square);
+
+    setHoverState((state: HoverState) =>
+      state.position !== position ? { visible: 'visible', position } : state
+    );
+  };
+
+  const onPieceDragStop = ({
+    data,
+    boardRef,
+    chessPiece,
+    setHoverState
+  }: ChessboardCallbackParams) => {
     const cords = calculateBoardCords(data, boardRef);
 
     if (!cords) {
@@ -40,6 +65,7 @@ const ChessboardPlay = () => {
 
     if (makeMove(chessPiece.square, to)) {
       setChessGame({ chessInterface });
+      setHoverState(BASIC_HOVER_STATE);
       return false;
     }
   };
@@ -49,6 +75,7 @@ const ChessboardPlay = () => {
       <div className="w-[640px] h-[640px]">
         <Chessboard
           board={chessInterface.getBoard()}
+          onPieceDrag={onPieceDrag}
           onPieceDragStop={onPieceDragStop}
         />
       </div>
