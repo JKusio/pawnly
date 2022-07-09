@@ -1,13 +1,14 @@
-import { ChessPiece as Piece, ChessSquare } from 'lib/chess/ChessInterface';
-import React, { createRef, useCallback, useEffect, useState } from 'react';
+import { ChessPiece as Piece } from 'lib/chess/ChessInterface';
+import React, { createRef, useEffect, useState } from 'react';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 import { getPiecesFromBoard } from 'utils/chess';
 import ChessPiece from '../ChessPiece';
-import HoverSquare, { BASIC_HOVER_STATE, HoverState } from '../HoverSquare';
+import HoverSquare, { BASIC_HOVER_STATE } from '../HoverSquare';
 import { ChessboardProps } from './props';
 
 const ChessboardComponent = ({
   board,
+  onPieceDragStart,
   onPieceDrag,
   onPieceDragStop
 }: ChessboardProps) => {
@@ -20,6 +21,16 @@ const ChessboardComponent = ({
   const boardRef = createRef<HTMLDivElement>();
 
   const [hoverState, setHoverState] = useState(BASIC_HOVER_STATE);
+
+  const handlePieceDragStart = (
+    e: DraggableEvent,
+    data: DraggableData,
+    chessPiece: Piece
+  ) => {
+    if (onPieceDragStart) {
+      return onPieceDragStart({ e, data, chessPiece, boardRef, setHoverState });
+    }
+  };
 
   const handlePieceDrag = (
     e: DraggableEvent,
@@ -50,6 +61,7 @@ const ChessboardComponent = ({
         <ChessPiece
           chessPiece={piece}
           key={`piece-${piece.square}`}
+          onDragStart={handlePieceDragStart}
           onDrag={handlePieceDrag}
           onDragStop={handlePieceDragStop}
         />

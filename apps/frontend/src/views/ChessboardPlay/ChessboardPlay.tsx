@@ -2,10 +2,8 @@ import { Move, Square } from 'chess.js';
 import Chessboard from 'components/Chessboard';
 import { ChessboardCallbackParams } from 'components/Chessboard/props';
 import { BASIC_HOVER_STATE, HoverState } from 'components/HoverSquare';
-import { ChessGame, useChessGame } from 'hooks/useChessGame';
-import { ChessPiece } from 'lib/chess/ChessInterface';
-import { RefObject, useCallback, useState } from 'react';
-import { DraggableData, DraggableEvent } from 'react-draggable';
+import { useChessGame } from 'hooks/useChessGame';
+import { useState } from 'react';
 import {
   calculateBoardCords,
   getBoardSquare,

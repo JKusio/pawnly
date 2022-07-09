@@ -5,8 +5,9 @@ import { DraggableData, DraggableEvent } from 'react-draggable';
 
 export type ChessboardProps = {
   board: ChessSquare[][];
-  onPieceDragStop?: (data: ChessboardCallbackParams) => void | false;
+  onPieceDragStart?: (data: ChessboardCallbackParams) => void | false;
   onPieceDrag?: (data: ChessboardCallbackParams) => void | false;
+  onPieceDragStop?: (data: ChessboardCallbackParams) => void | false;
 };
 
 export type ChessboardCallbackParams = {
