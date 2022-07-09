@@ -9,6 +9,7 @@ const TYPES: PieceType[] = ['k', 'q', 'r', 'n', 'b', 'p'];
 const ChessPieceRow = ({
   color,
   pieceSize,
+  disabled,
   onPieceDragStop
 }: ChessPieceRowProps) => {
   const handlePieceDragStop = (data: ChessPieceCallbackParams) => {
@@ -26,6 +27,7 @@ const ChessPieceRow = ({
           bounds={false}
           key={`chess-piece-row-${color}-${type}`}
           onDragStop={handlePieceDragStop}
+          disabled={disabled}
         />
       ))}
     </>

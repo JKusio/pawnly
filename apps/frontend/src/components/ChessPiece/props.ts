@@ -11,6 +11,7 @@ export type ChessPieceProps = {
   chessPiece: ChessPiece;
   bounds?: string | false;
   className?: string;
+  disabled?: boolean;
   onDragStart?: (data: ChessPieceCallbackParams) => void | false;
   onDrag?: (data: ChessPieceCallbackParams) => void | false;
   onDragStop?: (data: ChessPieceCallbackParams) => void | false;

@@ -31,6 +31,7 @@ const ChessPiece = ({
   chessPiece,
   bounds = 'parent',
   className,
+  disabled = false,
   onDragStart,
   onDrag,
   onDragStop
@@ -89,7 +90,8 @@ const ChessPiece = ({
       onStop={handleGrabStop}
       bounds={bounds}
       ref={draggableRef}
-      defaultClassName="z-10 cursor-grab"
+      disabled={disabled}
+      defaultClassName={`z-10 ${!disabled ? 'cursor-grab' : 'cursor-default'}`}
       defaultClassNameDragging="z-20 cursor-grabbing"
     >
       <div
