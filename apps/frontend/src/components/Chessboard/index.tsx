@@ -1,7 +1,7 @@
 import { ChessPiece as Piece } from 'lib/chess/ChessInterface';
 import React, { createRef, useEffect, useState } from 'react';
 import { DraggableData, DraggableEvent } from 'react-draggable';
-import { getPiecesFromBoard } from 'utils/chess';
+import { getChessSquareClass, getPiecesFromBoard } from 'utils/chess';
 import ChessPiece from '../ChessPiece';
 import HoverSquare, { BASIC_HOVER_STATE } from '../HoverSquare';
 import { ChessboardProps } from './props';
@@ -64,6 +64,9 @@ const Chessboard = ({
           onDragStart={handlePieceDragStart}
           onDrag={handlePieceDrag}
           onDragStop={handlePieceDragStop}
+          className={`absolute w-1/8 h-1/8 ${getChessSquareClass(
+            piece.square
+          )}`}
         />
       ))}
       <HoverSquare

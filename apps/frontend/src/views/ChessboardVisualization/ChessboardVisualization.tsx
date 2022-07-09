@@ -1,4 +1,5 @@
 import Chessboard from 'components/Chessboard';
+import ChessPiece from 'components/ChessPiece';
 import { useChessGame } from 'hooks';
 import { useChessboardVisualization } from 'hooks/useChessboardVisualization';
 import { ChessInterface } from 'lib/chess/ChessInterface';
@@ -12,12 +13,10 @@ const ChessboardVisualization = () => {
     chessInterface: new ChessInterface(PGN)
   }));
 
-  console.log(boardVisualization);
-
   const { chessInterface } = useChessboardVisualization(boardVisualization);
 
   return (
-    <div className="flex w-screen h-screen justify-center items-center">
+    <div className="flex w-screen h-screen justify-center items-center flex-col">
       <div className="w-[640px] h-[640px]">
         <Chessboard board={chessInterface.getBoard()} />
       </div>

@@ -3,6 +3,7 @@ import { DraggableData, DraggableEvent } from 'react-draggable';
 
 export type ChessPieceProps = {
   chessPiece: ChessPiece;
+  className?: string;
   onDragStart?: (
     e: DraggableEvent,
     data: DraggableData,

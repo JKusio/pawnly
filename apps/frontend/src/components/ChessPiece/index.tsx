@@ -2,7 +2,6 @@ import { PieceType } from 'chess.js';
 import { PieceColor } from 'lib/chess/ChessInterface';
 import React, { memo } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
-import { getChessSquareClass } from 'utils/chess';
 import { ChessPieceProps } from './props';
 
 const PIECE_MAP = {
@@ -29,9 +28,14 @@ const mapPieceToImage = (type: PieceType, color: PieceColor): string => {
 };
 
 const ChessPieceComponent = memo(
-  ({ chessPiece, onDragStart, onDrag, onDragStop }: ChessPieceProps) => {
+  ({
+    chessPiece,
+    className,
+    onDragStart,
+    onDrag,
+    onDragStop
+  }: ChessPieceProps) => {
     const background = mapPieceToImage(chessPiece.type, chessPiece.color);
-    const piecePositionClassName = getChessSquareClass(chessPiece.square);
 
     const draggableRef = React.useRef<Draggable>(null);
 
@@ -92,7 +96,7 @@ const ChessPieceComponent = memo(
         defaultClassNameDragging="z-20 cursor-grabbing"
       >
         <div
-          className={`absolute w-1/8 h-1/8 ${piecePositionClassName} ${background} bg-cover caret-transparent`}
+          className={`${className} ${background} bg-cover caret-transparent`}
         ></div>
       </Draggable>
     );
