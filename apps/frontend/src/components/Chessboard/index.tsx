@@ -54,18 +54,21 @@ const Chessboard = ({
       className="w-full h-full bg-[url('https://images.chesscomfiles.com/chess-themes/boards/walnut/150.jpg')] bg-center bg-cover relative"
       ref={boardRef}
     >
-      {pieces.map((piece: Piece) => (
-        <ChessPiece
-          chessPiece={piece}
-          key={`piece-${piece.square}`}
-          onDragStart={handlePieceDragStart}
-          onDrag={handlePieceDrag}
-          onDragStop={handlePieceDragStop}
-          className={`absolute w-1/8 h-1/8 ${getChessSquareClass(
-            piece.square
-          )}`}
-        />
-      ))}
+      {pieces.map(
+        (piece: Piece) =>
+          piece.square && (
+            <ChessPiece
+              chessPiece={piece}
+              key={`piece-${piece.square}`}
+              onDragStart={handlePieceDragStart}
+              onDrag={handlePieceDrag}
+              onDragStop={handlePieceDragStop}
+              className={`absolute w-1/8 h-1/8 ${getChessSquareClass(
+                piece.square
+              )}`}
+            />
+          )
+      )}
       <HoverSquare
         position={hoverState.position}
         visible={hoverState.visible}

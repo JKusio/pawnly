@@ -5,7 +5,7 @@ export type PieceColor = 'b' | 'w';
 export type ChessPiece = {
   type: PieceType;
   color: PieceColor;
-  square: Square;
+  square: Square | null;
 };
 
 export type ChessSquare = ChessPiece | null;
