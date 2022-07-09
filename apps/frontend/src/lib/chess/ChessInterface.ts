@@ -30,8 +30,6 @@ export class ChessInterface {
   }
 
   public getPieces(): ChessPiece[] {
-
-
     return [];
   }
 }

@@ -8,7 +8,10 @@ function App({ Component, pageProps }: AppProps) {
       <Head>
         <title>Pawnly</title>
       </Head>
-      <div id="main" className="overflow-hidden">
+      <div
+        id="main"
+        className="overflow-hidden bg-dark min-w-screen min-h-screen"
+      >
         <Component {...pageProps} />
       </div>
     </>
