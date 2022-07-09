@@ -53,18 +53,6 @@ const ChessPieceComponent = memo(
       }
     };
 
-    // const getCords = (data: DraggableData): { x: number; y: number } => {
-    //   const middle = data.node.offsetWidth / 2;
-    //   const squareSize = (data.node.parentElement?.clientWidth || 0) / 8;
-    //   const offsetLeft = data.node.offsetLeft;
-    //   const offsetTop = data.node.offsetTop;
-
-    //   const x = Math.floor((offsetLeft + data.x + middle) / squareSize);
-    //   const y = 7 - Math.floor((offsetTop + data.y + middle) / squareSize);
-
-    //   return { x, y };
-    // };
-
     const handleDrag = (
       e: DraggableEvent,
       data: DraggableData
@@ -101,7 +89,7 @@ const ChessPieceComponent = memo(
         bounds="parent"
         ref={draggableRef}
         defaultClassName="z-10 cursor-grab"
-        defaultClassNameDragging="z-10 cursor-grabbing"
+        defaultClassNameDragging="z-20 cursor-grabbing"
       >
         <div
           className={`absolute w-1/8 h-1/8 ${piecePositionClassName} ${background} bg-cover caret-transparent`}
