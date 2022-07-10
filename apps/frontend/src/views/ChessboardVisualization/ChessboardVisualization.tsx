@@ -2,8 +2,9 @@ import Chessboard from 'components/Chessboard';
 import { ChessboardCallbackParams } from 'components/Chessboard/props';
 import { ChessPieceCallbackParams } from 'components/ChessPiece/props';
 import ChessPieceRow from 'components/ChessPieceRow';
+import Countdown from 'components/Countdown';
 import { BASIC_HOVER_STATE, HoverState } from 'components/HoverSquare';
-import { useChessboardVisualization } from 'hooks';
+import { ChessVisualizationState, useChessboardVisualization } from 'hooks';
 import { useRef, useState } from 'react';
 import {
   BoardCords,
@@ -19,7 +20,12 @@ const PGN =
 const ChessboardVisualization = () => {
   const [boardVisualization, setBoardVisualization] = useState({});
   const [hoverState, setHoverState] = useState(BASIC_HOVER_STATE);
-  const { memorizedBoard } = useChessboardVisualization(boardVisualization);
+  const { chessInterface, memorizedBoard, state } =
+    useChessboardVisualization(boardVisualization);
+
+  const countdownCallback = () => {
+    console.log('xd');
+  };
 
   const boardRef = useRef<HTMLDivElement>(null);
 
@@ -75,7 +81,11 @@ const ChessboardVisualization = () => {
 
   return (
     <div className="flex w-screen h-screen justify-center items-center flex-col">
-      <div className="w-[640px] flex justify-around my-4 relative z-20">
+      <div
+        className={`${
+          state === ChessVisualizationState.Memorize ? 'hidden' : 'flex'
+        } w-[640px] justify-around my-4 relative`}
+      >
         <ChessPieceRow
           color="b"
           pieceClassName="w-[80px] h-[80px] z-20"
@@ -90,6 +100,9 @@ const ChessboardVisualization = () => {
           />
         </div>
       </div>
+      <div className="flex w-[640px] justify-center text-6xl text-white font-bold my-4">
+        <Countdown length={10} callback={countdownCallback} />
+      </div>
       <div className="w-[640px] h-[640px]">
         <Chessboard
           board={memorizedBoard}
@@ -100,7 +113,11 @@ const ChessboardVisualization = () => {
           ref={boardRef}
         />
       </div>
-      <div className="w-[640px] flex justify-around my-4 relative">
+      <div
+        className={`${
+          state === ChessVisualizationState.Memorize ? 'hidden' : 'flex'
+        } w-[640px] justify-around my-4 relative`}
+      >
         <ChessPieceRow
           color="w"
           pieceClassName="w-[80px] h-[80px] z-20"

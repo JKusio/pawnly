@@ -1,9 +1,16 @@
 import { ChessInterface, ChessSquare } from 'lib/chess/ChessInterface';
 import { useEffect, useState } from 'react';
 
+export enum ChessVisualizationState {
+  Memorize = 'Memorize',
+  Place = 'Place',
+  Results = 'Results'
+}
+
 export type ChessVisualization = {
   chessInterface: ChessInterface;
   memorizedBoard: ChessSquare[][];
+  state: ChessVisualizationState;
 };
 
 export const useChessboardVisualization = (
@@ -17,6 +24,7 @@ export const useChessboardVisualization = (
   const [memorizedBoard, setMemorizedBoard] = useState(
     Array.from(Array(8), (_) => Array(8).fill(null))
   );
+  const [state, setState] = useState(ChessVisualizationState.Memorize);
 
   useEffect(() => {
     return () => {
@@ -32,6 +40,7 @@ export const useChessboardVisualization = (
 
   return {
     chessInterface,
-    memorizedBoard
+    memorizedBoard,
+    state
   };
 };
