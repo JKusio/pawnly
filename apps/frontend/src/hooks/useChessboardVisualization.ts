@@ -9,7 +9,7 @@ export enum ChessVisualizationState {
 
 export type ChessVisualization = {
   chessInterface: ChessInterface;
-  memorizedBoard: ChessSquare[][];
+  board: ChessSquare[][];
   state: ChessVisualizationState;
 };
 
@@ -21,7 +21,7 @@ export const useChessboardVisualization = (
       ? chessVisualization.chessInterface
       : new ChessInterface()
   );
-  const [memorizedBoard, setMemorizedBoard] = useState(
+  const [board, setBoard] = useState(
     Array.from(Array(8), (_) => Array(8).fill(null))
   );
   const [state, setState] = useState(ChessVisualizationState.Memorize);
@@ -32,15 +32,15 @@ export const useChessboardVisualization = (
         setChessInterface(chessVisualization.chessInterface);
       }
 
-      if (chessVisualization.memorizedBoard) {
-        setMemorizedBoard(chessVisualization.memorizedBoard);
+      if (chessVisualization.board) {
+        setBoard(chessVisualization.board);
       }
     };
   }, [chessVisualization]);
 
   return {
     chessInterface,
-    memorizedBoard,
+    board,
     state
   };
 };

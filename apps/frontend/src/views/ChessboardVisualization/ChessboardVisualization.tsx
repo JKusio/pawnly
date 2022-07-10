@@ -20,7 +20,7 @@ const PGN =
 const ChessboardVisualization = () => {
   const [boardVisualization, setBoardVisualization] = useState({});
   const [hoverState, setHoverState] = useState(BASIC_HOVER_STATE);
-  const { chessInterface, memorizedBoard, state } =
+  const { chessInterface, board, state } =
     useChessboardVisualization(boardVisualization);
 
   const countdownCallback = () => {
@@ -56,15 +56,15 @@ const ChessboardVisualization = () => {
       const pieceCords = getCordsFromSquare(chessPiece.square) as BoardCords;
 
       if (!cords) {
-        memorizedBoard[pieceCords.x][pieceCords.y] = null;
-        setBoardVisualization({ memorizedBoard });
+        board[pieceCords.x][pieceCords.y] = null;
+        setBoardVisualization({ board });
         return false;
       }
 
       const square = getBoardSquare(cords.x, cords.y);
-      memorizedBoard[pieceCords.x][pieceCords.y] = null;
-      memorizedBoard[cords.x][cords.y] = { ...chessPiece, square };
-      setBoardVisualization({ memorizedBoard });
+      board[pieceCords.x][pieceCords.y] = null;
+      board[cords.x][cords.y] = { ...chessPiece, square };
+      setBoardVisualization({ board });
       return false;
     }
     // handle piece from row
@@ -74,8 +74,8 @@ const ChessboardVisualization = () => {
       }
 
       const square = getBoardSquare(cords.x, cords.y);
-      memorizedBoard[cords.x][cords.y] = { ...chessPiece, square };
-      setBoardVisualization({ memorizedBoard });
+      board[cords.x][cords.y] = { ...chessPiece, square };
+      setBoardVisualization({ board });
     }
   };
 
@@ -105,7 +105,7 @@ const ChessboardVisualization = () => {
       </div>
       <div className="w-[640px] h-[640px]">
         <Chessboard
-          board={memorizedBoard}
+          board={board}
           hoverState={hoverState}
           onPieceDrag={onPieceDrag}
           onPieceDragStop={onPieceDragStop}
