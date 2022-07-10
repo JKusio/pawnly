@@ -2,10 +2,11 @@ import Chessboard from 'components/Chessboard';
 import { ChessboardCallbackParams } from 'components/Chessboard/props';
 import { ChessPieceCallbackParams } from 'components/ChessPiece/props';
 import ChessPieceRow from 'components/ChessPieceRow';
-import { HoverState } from 'components/HoverSquare';
+import { BASIC_HOVER_STATE, HoverState } from 'components/HoverSquare';
 import { useChessboardVisualization } from 'hooks';
 import { useRef, useState } from 'react';
 import {
+  BoardCords,
   calculateBoardCords,
   getBoardSquare,
   getChessSquareClass,
@@ -17,11 +18,12 @@ const PGN =
 
 const ChessboardVisualization = () => {
   const [boardVisualization, setBoardVisualization] = useState({});
+  const [hoverState, setHoverState] = useState(BASIC_HOVER_STATE);
   const { memorizedBoard } = useChessboardVisualization(boardVisualization);
 
   const boardRef = useRef<HTMLDivElement>(null);
 
-  const onPieceDragStop = ({ data, chessPiece }: ChessPieceCallbackParams) => {
+  const onPieceDrag = ({ data }: ChessboardCallbackParams) => {
     const cords = calculateBoardCords(data, boardRef);
 
     if (!cords) {
@@ -29,41 +31,46 @@ const ChessboardVisualization = () => {
     }
 
     const square = getBoardSquare(cords.x, cords.y);
+    const position = getChessSquareClass(square);
 
-    memorizedBoard[cords.x][cords.y] = { ...chessPiece, square };
-
-    setBoardVisualization({ memorizedBoard });
+    setHoverState((state: HoverState) =>
+      state.position !== position ? { visible: 'visible', position } : state
+    );
   };
 
-  const onChessboardPieceDragStop = ({
-    data,
-    chessPiece
-  }: ChessboardCallbackParams) => {
-    if (!chessPiece.square) {
-      return;
-    }
-    const pieceCords = getCordsFromSquare(chessPiece.square);
-
-    if (!pieceCords) {
-      return;
-    }
+  const onPieceDragStop = ({ data, chessPiece }: ChessboardCallbackParams) => {
+    setHoverState(BASIC_HOVER_STATE);
 
     const cords = calculateBoardCords(data, boardRef);
 
-    if (!cords) {
+    setHoverState(BASIC_HOVER_STATE);
+
+    // handle piece on board
+    if (chessPiece.square) {
+      const pieceCords = getCordsFromSquare(chessPiece.square) as BoardCords;
+
+      if (!cords) {
+        memorizedBoard[pieceCords.x][pieceCords.y] = null;
+        setBoardVisualization({ memorizedBoard });
+        return false;
+      }
+
+      const square = getBoardSquare(cords.x, cords.y);
       memorizedBoard[pieceCords.x][pieceCords.y] = null;
+      memorizedBoard[cords.x][cords.y] = { ...chessPiece, square };
       setBoardVisualization({ memorizedBoard });
       return false;
     }
+    // handle piece from row
+    else {
+      if (!cords) {
+        return;
+      }
 
-    const square = getBoardSquare(cords.x, cords.y);
-
-    memorizedBoard[pieceCords.x][pieceCords.y] = null;
-    memorizedBoard[cords.x][cords.y] = { ...chessPiece, square };
-
-    setBoardVisualization({ memorizedBoard });
-
-    return false;
+      const square = getBoardSquare(cords.x, cords.y);
+      memorizedBoard[cords.x][cords.y] = { ...chessPiece, square };
+      setBoardVisualization({ memorizedBoard });
+    }
   };
 
   return (
@@ -72,6 +79,7 @@ const ChessboardVisualization = () => {
         <ChessPieceRow
           color="b"
           pieceClassName="w-[80px] h-[80px] z-20"
+          onPieceDrag={onPieceDrag}
           onPieceDragStop={onPieceDragStop}
         />
         <div className="w-full flex justify-around absolute z-10">
@@ -85,7 +93,9 @@ const ChessboardVisualization = () => {
       <div className="w-[640px] h-[640px]">
         <Chessboard
           board={memorizedBoard}
-          onPieceDragStop={onChessboardPieceDragStop}
+          hoverState={hoverState}
+          onPieceDrag={onPieceDrag}
+          onPieceDragStop={onPieceDragStop}
           pieceBound={false}
           ref={boardRef}
         />
@@ -94,6 +104,7 @@ const ChessboardVisualization = () => {
         <ChessPieceRow
           color="w"
           pieceClassName="w-[80px] h-[80px] z-20"
+          onPieceDrag={onPieceDrag}
           onPieceDragStop={onPieceDragStop}
         />
         <div className="w-full flex justify-around absolute">
