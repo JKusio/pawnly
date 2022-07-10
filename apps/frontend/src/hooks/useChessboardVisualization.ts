@@ -21,21 +21,26 @@ export const useChessboardVisualization = (
       ? chessVisualization.chessInterface
       : new ChessInterface()
   );
-  const [board, setBoard] = useState(
-    Array.from(Array(8), (_) => Array(8).fill(null))
-  );
+  const [board, setBoard] = useState(chessInterface.getBoard());
   const [state, setState] = useState(ChessVisualizationState.Memorize);
 
   useEffect(() => {
-    return () => {
-      if (chessVisualization.chessInterface) {
-        setChessInterface(chessVisualization.chessInterface);
-      }
+    if (chessVisualization.chessInterface) {
+      setChessInterface(chessVisualization.chessInterface);
+    }
 
-      if (chessVisualization.board) {
-        setBoard(chessVisualization.board);
+    if (chessVisualization.board) {
+      setBoard(chessVisualization.board);
+    }
+
+    if (chessVisualization.state) {
+      console.log('xx');
+      setState(chessVisualization.state);
+
+      if (chessVisualization.state === ChessVisualizationState.Place) {
+        setBoard(Array.from(Array(8), (_) => Array(8).fill(null)));
       }
-    };
+    }
   }, [chessVisualization]);
 
   return {
