@@ -1,4 +1,6 @@
 import express, { Express } from "express";
+import * as trpcExpress from "@trpc/server/adapters/express";
+import { appRouter } from "./trpc";
 
 export const createApp = async (): Promise<Express> => {
 	const app = express();
@@ -25,6 +27,13 @@ export const createApp = async (): Promise<Express> => {
 	// });
 
 	// app.use(errorHandlingMiddleware);
+
+	const createContext = () => ({});
+
+	app.use(
+		"/trpc",
+		trpcExpress.createExpressMiddleware({ router: appRouter, createContext })
+	);
 
 	return app;
 };
