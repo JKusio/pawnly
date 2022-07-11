@@ -1,4 +1,4 @@
-import { mongoDBClient } from "../../../shared/common/infrastructure/mongodb/mongoClient";
+import { mongoDBClient } from "../../../shared/common/infrastructure/mongodb/mongoDBClient";
 import { ChessGame } from "../domain/ChessGame";
 import { ChessGamesRepository } from "./ChessGamesRepository";
 

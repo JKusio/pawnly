@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { createApp } from "./interfaces/app";
-import { mongoDBClient } from "./shared/common/infrastructure/mongodb/mongoClient";
+import { mongoDBClient } from "./shared/common/infrastructure/mongodb/mongoDBClient";
 
 (async (): Promise<void> => {
 	await mongoDBClient.connect();
