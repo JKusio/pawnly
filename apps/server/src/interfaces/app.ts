@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
-import { appRouter } from "./trpc";
+import { getAppRouter } from "./trpc";
+import { getChessGamesConfig } from "../modules/chessGames/application/ChessGamesConfig";
 
 export const createApp = async (): Promise<Express> => {
 	const app = express();
@@ -28,11 +29,16 @@ export const createApp = async (): Promise<Express> => {
 
 	// app.use(errorHandlingMiddleware);
 
+	const { chessGamesRouter } = getChessGamesConfig();
+
 	const createContext = () => ({});
 
 	app.use(
 		"/trpc",
-		trpcExpress.createExpressMiddleware({ router: appRouter, createContext })
+		trpcExpress.createExpressMiddleware({
+			router: getAppRouter({ chessGamesRouter }),
+			createContext,
+		})
 	);
 
 	return app;

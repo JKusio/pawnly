@@ -1,18 +1,14 @@
 import * as trpc from "@trpc/server";
-import { z } from "zod";
+import { ChessGamesRouter } from "../modules/chessGames/api/ChessGamesRouter";
 
-export const appRouter = trpc
-	.router()
-	.query("getUser", {
-		async resolve(req) {
-			return { name: "Bilbo" };
-		},
-	})
-	.mutation("createUser", {
-		input: z.object({ name: z.string().min(5) }),
-		async resolve(req) {
-			return [];
-		},
-	});
+export const getAppRouter = ({
+	chessGamesRouter,
+}: {
+	chessGamesRouter: ChessGamesRouter;
+}) => {
+	const appRouter = trpc.router().merge(chessGamesRouter);
 
-export type AppRouter = typeof appRouter;
+	return appRouter;
+};
+
+export type AppRouter = ReturnType<typeof getAppRouter>;

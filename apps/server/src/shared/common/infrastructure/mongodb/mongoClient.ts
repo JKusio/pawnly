@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { Db, MongoClient } from "mongodb";
 import { mongodbConfig } from "../../../config/mongodb.config";
 
 const MongoDBClient = () => {
@@ -11,6 +11,9 @@ const MongoDBClient = () => {
 		},
 		close: async () => {
 			await client.close();
+		},
+		getDatabase: (): Db => {
+			return client.db();
 		},
 	};
 };
