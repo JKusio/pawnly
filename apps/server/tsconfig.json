@@ -1,0 +1,18 @@
+{
+	"extends": "@tsconfig/node16/tsconfig.json",
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"outDir": "./dist",
+		"removeComments": true,
+		"sourceMap": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"strictBindCallApply": true,
+		"noImplicitOverride": true,
+		"resolveJsonModule": true,
+		"strict": true,
+		"baseUrl": "./"
+	},
+	"include": ["./src/**/*.ts"],
+	"exclude": ["node_modules", "dist"]
+}
