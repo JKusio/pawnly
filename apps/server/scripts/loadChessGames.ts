@@ -11,7 +11,8 @@ import { mongoDBClient } from "../src/shared/common/infrastructure/mongodb/mongo
 	const pgnFile = fs.readFileSync(pgnFilePath);
 	const lines = pgnFile.toString().split("\n");
 
-	const gamePGNs: string[] = [];
+	const gamePGNs: any[] = [];
+	let currentGame = { headers: "", game: "" };
 	let storedLines: string[] = [];
 	let emptyLinesCount = 0;
 
@@ -19,10 +20,17 @@ import { mongoDBClient } from "../src/shared/common/infrastructure/mongodb/mongo
 		if (line === "") {
 			emptyLinesCount++;
 
+			if (emptyLinesCount == 1) {
+				currentGame.headers = storedLines.join("\n");
+				storedLines = [];
+				continue;
+			}
+
 			if (emptyLinesCount == 2) {
-				gamePGNs.push(storedLines.join("\n"));
+				currentGame.game = storedLines.join("\n");
 				emptyLinesCount = 0;
 				storedLines = [];
+				gamePGNs.push({ ...currentGame });
 				continue;
 			}
 		}
@@ -38,7 +46,12 @@ import { mongoDBClient } from "../src/shared/common/infrastructure/mongodb/mongo
 
 	console.log("Uploading games to mongoDB");
 	const chessGames = db.collection("chessgames");
-	await chessGames.insertMany(gamePGNs.map((gamePGN) => ({ pgn: gamePGN })));
+	await chessGames.insertMany(
+		gamePGNs.map((gamePGN) => ({
+			pgn: `${gamePGN.headers}\n\n${gamePGN.game}`,
+			piecesLeft: 32 - gamePGN.game.match(/x/g).length,
+		}))
+	);
 
 	console.log(`Managed to upload ${gamePGNs.length} new games to database`);
 	return;
