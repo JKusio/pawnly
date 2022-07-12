@@ -2,6 +2,9 @@ import express, { Express } from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { getAppRouter } from "./trpc";
 import { getChessGamesConfig } from "../modules/chessGames/application/ChessGamesConfig";
+import { EloClient } from "../shared/common/utils/EloClient";
+
+export let ELO = 800;
 
 export const createApp = async (): Promise<Express> => {
 	const app = express();
@@ -30,8 +33,14 @@ export const createApp = async (): Promise<Express> => {
 	// app.use(errorHandlingMiddleware);
 
 	const { chessGamesRouter } = getChessGamesConfig();
+	const eloClient = new EloClient();
+	const expectedResult = eloClient.calculateExpectedResult(800, 900);
 
-	const createContext = () => ({});
+	console.log(eloClient.calculateExpectedRate(800, 80, 1, expectedResult));
+
+	const createContext = () => {
+		return {};
+	};
 
 	app.use(
 		"/trpc",
