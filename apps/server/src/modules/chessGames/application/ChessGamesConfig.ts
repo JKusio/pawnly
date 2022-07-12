@@ -1,13 +1,11 @@
-import { ChessGamesController } from "../api/ChessGamesController";
 import { getChessGamesRouter } from "../api/ChessGamesRouter";
 import { MongoChessGamesRepository } from "../infrastructure/MongoChessGamesRepository";
+import { ChessGamesFacade } from "./ChessGamesFacade";
 
 export const getChessGamesConfig = () => {
 	const chessGamesRepository = new MongoChessGamesRepository();
-	const chessGamesController = new ChessGamesController({
-		chessGamesRepository,
-	});
-	const chessGamesRouter = getChessGamesRouter({ chessGamesController });
+	const chessGamesFacade = new ChessGamesFacade(chessGamesRepository);
+	const chessGamesRouter = getChessGamesRouter({ chessGamesFacade });
 
 	return {
 		chessGamesRouter,

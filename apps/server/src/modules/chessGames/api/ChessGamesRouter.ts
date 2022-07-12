@@ -1,14 +1,21 @@
 import * as trpc from "@trpc/server";
-import { ChessGamesController } from "./ChessGamesController";
+import { z } from "zod";
+import { ChessGamesFacade } from "../application/ChessGamesFacade";
+import { GetChessGamesQueryInput } from "./GetChessGamesQueryInput";
 
 export const getChessGamesRouter = ({
-	chessGamesController,
+	chessGamesFacade,
 }: {
-	chessGamesController: ChessGamesController;
+	chessGamesFacade: ChessGamesFacade;
 }) => {
 	const chessGamesRouter = trpc.router().query("getChessGames", {
-		resolve: async () => {
-			return chessGamesController.getChessGames();
+		input: z.object({
+			piecesLeft: z.number().default(32),
+			count: z.number().default(10),
+			random: z.boolean().default(false),
+		}),
+		resolve: async ({ input }: { input: GetChessGamesQueryInput }) => {
+			return chessGamesFacade.getChessGames(input);
 		},
 	});
 

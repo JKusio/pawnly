@@ -1,5 +1,6 @@
+import { GetChessGamesQueryInput } from "../api/GetChessGamesQueryInput";
 import { ChessGame } from "../domain/ChessGame";
 
 export interface ChessGamesRepository {
-	getChessGames(): Promise<ChessGame[]>;
+	getChessGames(input: GetChessGamesQueryInput): Promise<ChessGame[]>;
 }
