@@ -5,11 +5,13 @@
 	"scripts": {
 		"start": "ts-node ./src/server.ts",
 		"start:dev": "ts-node-dev --respawn ./src/server.ts",
-		"loadChessGames": "ts-node ./scripts/loadChessGames.ts"
+		"loadChessGames": "ts-node ./scripts/loadChessGames.ts",
+		"createPuzzles": "node --loader ts-node/esm ./scripts/createVisualizationPuzzles.ts"
 	},
 	"author": "Jakub Kusiowski ",
 	"dependencies": {
 		"@trpc/server": "9.25.3",
+		"chess.js": "github:jhlywa/chess.js#dev",
 		"dotenv": "16.0.1",
 		"express": "4.18.1",
 		"mongodb": "4.7.0",
