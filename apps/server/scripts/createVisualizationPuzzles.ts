@@ -1,7 +1,6 @@
 import "dotenv/config";
 import { Chess } from "chess.js";
 import { mongoDBClient } from "../src/shared/common/infrastructure/mongodb/mongoDBClient";
-import { ObjectId } from "mongodb";
 
 const calculateRating = (pieces: number, moves: number) => {
 	return pieces * 50 + moves * 70;
@@ -20,19 +19,18 @@ const calculateRating = (pieces: number, moves: number) => {
 	console.log(`Loaded ${games.length} games`);
 
 	let puzzles: {
-		chessGameId: ObjectId;
-		startMove: number;
-		movesForward: number;
+		fen: string;
+		moves: { from: string; to: string; san: string }[];
 		rating: number;
 	}[] = [];
 
 	for (const game of games) {
 		chess.loadPgn(game.pgn);
 		const gameLength = chess.history().length;
-		let depth = 0;
+		let undoneMoves: { from: string; to: string; san: string }[] = [];
 
 		for (let i = 0; i <= gameLength; i++) {
-			for (let j = 0; j < depth + 1; j++) {
+			for (let j = 0; j < undoneMoves.length + 1; j++) {
 				const pieces = chess
 					.board()
 					.map((row) =>
@@ -42,16 +40,21 @@ const calculateRating = (pieces: number, moves: number) => {
 
 				const rating = calculateRating(pieces, j);
 				puzzles.push({
-					chessGameId: game._id,
-					startMove: gameLength - i,
-					movesForward: j,
+					fen: chess.fen(),
+					moves: undoneMoves.slice(0, j),
 					rating,
 				});
 			}
 
-			depth = depth + 1 > 20 ? 20 : depth + 1;
-			chess.undo();
+			const undoneMove = chess.undo();
+			undoneMoves.push({
+				from: undoneMove?.from as string,
+				to: undoneMove?.to as string,
+				san: undoneMove?.san as string,
+			});
 		}
+
+		puzzles = puzzles.sort(() => 0.5 - Math.random()).slice(0, 200);
 
 		console.log(`Uploading ${puzzles.length} puzzles...`);
 		await chessVisualizationPuzzles.insertMany(puzzles);
