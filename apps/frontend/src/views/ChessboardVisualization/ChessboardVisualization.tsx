@@ -16,7 +16,8 @@ import {
   calculateBoardCords,
   getBoardSquare,
   getChessSquareClass,
-  getCordsFromSquare
+  getCordsFromSquare,
+  getDifferenceBoard
 } from 'utils/chess';
 
 const PGN =
@@ -86,6 +87,18 @@ const ChessboardVisualization = () => {
     }
   };
 
+  const submit = () => {
+    const originalBoard = chessInterface.getBoard();
+    const differenceBoard = getDifferenceBoard(originalBoard, board);
+    const differencesCount = differenceBoard.reduce(
+      (prev, current) => (prev += current.reduce((p, c) => p + (c ? 0 : 1), 0)),
+      0
+    );
+
+    console.log(differenceBoard);
+    console.log(differencesCount);
+  };
+
   return (
     <div className="flex w-screen h-screen justify-center items-center flex-col">
       <div
@@ -142,6 +155,18 @@ const ChessboardVisualization = () => {
             disabled={true}
           />
         </div>
+      </div>
+      <div
+        className={`${
+          state === ChessVisualizationState.Memorize ? 'hidden' : 'flex'
+        } w-full flex justify-center`}
+      >
+        <button
+          className="w-[120px] h-[40px] bg-[#DAF7A6] rounded-md"
+          onClick={submit}
+        >
+          Submit
+        </button>
       </div>
     </div>
   );

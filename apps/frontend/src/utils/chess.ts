@@ -88,3 +88,16 @@ export const calculateBoardCords = (
 
   return { x, y };
 };
+
+export const getDifferenceBoard = (
+  boardA: ChessSquare[][],
+  boardB: ChessSquare[][]
+): boolean[][] =>
+  boardA.map((row, x) =>
+    row.map((square, y) =>
+      square?.color !== boardB[x][y]?.color ||
+      square?.type !== boardB[x][y]?.type
+        ? false
+        : true
+    )
+  );
