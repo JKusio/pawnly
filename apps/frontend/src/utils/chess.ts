@@ -19,11 +19,11 @@ export const getCordsFromSquare = (square?: Square): BoardCords | null => {
     return null;
   }
 
-  const [row, column] = square.split('');
-  const x = parseInt(column) - 1;
-  const y = CHESS_COLUMNS.findIndex((c: string) => c === row);
+  console.log(square);
 
-  console.log(x, y);
+  const [row, column] = square.split('');
+  const x = CHESS_COLUMNS.findIndex((c: string) => c === row);
+  const y = 8 - parseInt(column);
 
   return { x, y };
 };
@@ -100,8 +100,6 @@ export const getDifferenceBoard = (
       if (square === null && boardB[x][y] === null) {
         return null;
       }
-
-      console.log(x, y, boardA[x][y], boardB[x][y]);
 
       if (
         square?.color !== boardB[x][y]?.color ||

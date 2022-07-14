@@ -17,6 +17,7 @@ const Chessboard = forwardRef(
       pieceBound,
       hoverState = BASIC_HOVER_STATE,
       boardOverlay,
+      disabled = false,
       onPieceDragStart,
       onPieceDrag,
       onPieceDragStop
@@ -80,6 +81,7 @@ const Chessboard = forwardRef(
                 className={`absolute w-1/8 h-1/8 ${getChessSquareClass(
                   piece.square
                 )}`}
+                disabled={disabled}
                 key={`piece-${piece.square}`}
               />
             )

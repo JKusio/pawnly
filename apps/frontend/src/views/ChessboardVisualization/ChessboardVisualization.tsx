@@ -68,6 +68,10 @@ const ChessboardVisualization = () => {
         return false;
       }
 
+      if (pieceCords.x === cords.x && pieceCords.y === cords.y) {
+        return;
+      }
+
       const square = getBoardSquare(cords.x, cords.y);
       board[pieceCords.y][pieceCords.x] = null;
       board[cords.y][cords.x] = { ...chessPiece, square };
@@ -79,8 +83,6 @@ const ChessboardVisualization = () => {
       if (!cords) {
         return;
       }
-
-      console.log(cords);
 
       const square = getBoardSquare(cords.x, cords.y);
       board[cords.y][cords.x] = { ...chessPiece, square };
@@ -130,6 +132,7 @@ const ChessboardVisualization = () => {
           onPieceDragStop={onPieceDragStop}
           boardOverlay={boardOverlay}
           pieceBound={false}
+          disabled={state !== ChessVisualizationState.Place}
           ref={boardRef}
         />
       </div>

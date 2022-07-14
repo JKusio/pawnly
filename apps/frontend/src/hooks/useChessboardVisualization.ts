@@ -47,17 +47,7 @@ export const useChessboardVisualization = (
 
       if (chessVisualization.state === ChessVisualizationState.Results) {
         const originalBoard = chessInterface.getBoard();
-
-        console.log(originalBoard);
-        console.log(board);
-
         const differenceBoard = getDifferenceBoard(originalBoard, board);
-        // const differencesCount = differenceBoard.reduce(
-        //   (prev, current) => (prev += current.reduce((p, c) => p + (c ? 0 : 1), 0)),
-        //   0
-        // );
-
-        console.log(differenceBoard);
         const boardOverlay = differenceBoard.map((row) =>
           row.map((square) => {
             if (square === null) {
