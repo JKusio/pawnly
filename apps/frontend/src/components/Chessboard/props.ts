@@ -7,6 +7,7 @@ export type ChessboardProps = {
   board: ChessSquare[][];
   pieceBound?: string | false;
   hoverState?: HoverState;
+  boardOverlay?: (string | null)[][];
   onPieceDragStart?: (data: ChessboardCallbackParams) => void | false;
   onPieceDrag?: (data: ChessboardCallbackParams) => void | false;
   onPieceDragStop?: (data: ChessboardCallbackParams) => void | false;

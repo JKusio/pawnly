@@ -28,7 +28,7 @@ const ChessboardVisualization = () => {
     Partial<ChessVisualization>
   >({ chessInterface: new ChessInterface(PGN) });
   const [hoverState, setHoverState] = useState(BASIC_HOVER_STATE);
-  const { chessInterface, board, state } =
+  const { chessInterface, board, boardOverlay, state } =
     useChessboardVisualization(boardVisualization);
 
   const countdownCallback = () => {
@@ -41,6 +41,7 @@ const ChessboardVisualization = () => {
     const cords = calculateBoardCords(data, boardRef);
 
     if (!cords) {
+      setHoverState(BASIC_HOVER_STATE);
       return;
     }
 
@@ -57,21 +58,19 @@ const ChessboardVisualization = () => {
 
     const cords = calculateBoardCords(data, boardRef);
 
-    setHoverState(BASIC_HOVER_STATE);
-
     // handle piece on board
     if (chessPiece.square) {
       const pieceCords = getCordsFromSquare(chessPiece.square) as BoardCords;
 
       if (!cords) {
-        board[pieceCords.x][pieceCords.y] = null;
+        board[pieceCords.y][pieceCords.x] = null;
         setBoardVisualization({ board });
         return false;
       }
 
       const square = getBoardSquare(cords.x, cords.y);
-      board[pieceCords.x][pieceCords.y] = null;
-      board[cords.x][cords.y] = { ...chessPiece, square };
+      board[pieceCords.y][pieceCords.x] = null;
+      board[cords.y][cords.x] = { ...chessPiece, square };
       setBoardVisualization({ board });
       return false;
     }
@@ -81,22 +80,18 @@ const ChessboardVisualization = () => {
         return;
       }
 
+      console.log(cords);
+
       const square = getBoardSquare(cords.x, cords.y);
-      board[cords.x][cords.y] = { ...chessPiece, square };
+      board[cords.y][cords.x] = { ...chessPiece, square };
       setBoardVisualization({ board });
     }
   };
 
   const submit = () => {
-    const originalBoard = chessInterface.getBoard();
-    const differenceBoard = getDifferenceBoard(originalBoard, board);
-    const differencesCount = differenceBoard.reduce(
-      (prev, current) => (prev += current.reduce((p, c) => p + (c ? 0 : 1), 0)),
-      0
-    );
-
-    console.log(differenceBoard);
-    console.log(differencesCount);
+    setBoardVisualization({
+      state: ChessVisualizationState.Results
+    });
   };
 
   return (
@@ -133,6 +128,7 @@ const ChessboardVisualization = () => {
           hoverState={hoverState}
           onPieceDrag={onPieceDrag}
           onPieceDragStop={onPieceDragStop}
+          boardOverlay={boardOverlay}
           pieceBound={false}
           ref={boardRef}
         />
@@ -158,7 +154,7 @@ const ChessboardVisualization = () => {
       </div>
       <div
         className={`${
-          state === ChessVisualizationState.Memorize ? 'hidden' : 'flex'
+          state === ChessVisualizationState.Place ? 'flex' : 'hidden'
         } w-full flex justify-center`}
       >
         <button

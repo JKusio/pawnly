@@ -11,7 +11,7 @@ export const getBoardSquare = (x: number, y: number): Square => {
   }
 
   // This will always return correct square
-  return `${CHESS_COLUMNS[x]}${y + 1}` as Square;
+  return `${CHESS_COLUMNS[x]}${8 - y}` as Square;
 };
 
 export const getCordsFromSquare = (square?: Square): BoardCords | null => {
@@ -19,9 +19,11 @@ export const getCordsFromSquare = (square?: Square): BoardCords | null => {
     return null;
   }
 
-  const [column, row] = square.split('');
-  const x = CHESS_COLUMNS.findIndex((c: string) => c === column);
-  const y = parseInt(row) - 1;
+  const [row, column] = square.split('');
+  const x = parseInt(column) - 1;
+  const y = CHESS_COLUMNS.findIndex((c: string) => c === row);
+
+  console.log(x, y);
 
   return { x, y };
 };
@@ -84,7 +86,7 @@ export const calculateBoardCords = (
   const squareSize = boardSize / 8;
 
   const x = Math.floor(xDiff / squareSize);
-  const y = 7 - Math.floor(yDiff / squareSize);
+  const y = Math.floor(yDiff / squareSize);
 
   return { x, y };
 };
@@ -92,12 +94,22 @@ export const calculateBoardCords = (
 export const getDifferenceBoard = (
   boardA: ChessSquare[][],
   boardB: ChessSquare[][]
-): boolean[][] =>
+): (boolean | null)[][] =>
   boardA.map((row, x) =>
-    row.map((square, y) =>
-      square?.color !== boardB[x][y]?.color ||
-      square?.type !== boardB[x][y]?.type
-        ? false
-        : true
-    )
+    row.map((square, y) => {
+      if (square === null && boardB[x][y] === null) {
+        return null;
+      }
+
+      console.log(x, y, boardA[x][y], boardB[x][y]);
+
+      if (
+        square?.color !== boardB[x][y]?.color ||
+        square?.type !== boardB[x][y]?.type
+      ) {
+        return false;
+      }
+
+      return true;
+    })
   );

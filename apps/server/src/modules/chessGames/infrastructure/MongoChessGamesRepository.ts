@@ -17,8 +17,6 @@ export class MongoChessGamesRepository implements ChessGamesRepository {
 		count,
 		random,
 	}: GetChessGamesQueryInput): Promise<ChessGame[]> => {
-		console.log("");
-
 		let chessGames = [];
 
 		const skip = random
