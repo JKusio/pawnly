@@ -3,7 +3,7 @@ import { Chess } from "chess.js";
 import { mongoDBClient } from "../src/shared/common/infrastructure/mongodb/mongoDBClient";
 
 const calculateRating = (pieces: number, moves: number) => {
-	return pieces * 50 + moves * 70;
+	return 100 + (pieces - 2) * 50 + (moves > 40 ? 40 : moves) * 50;
 };
 
 (async () => {
