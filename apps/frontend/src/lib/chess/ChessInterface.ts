@@ -5,7 +5,7 @@ export type PieceColor = 'b' | 'w';
 export type ChessPiece = {
   type: PieceType;
   color: PieceColor;
-  square: Square;
+  square: Square | null;
 };
 
 export type ChessSquare = ChessPiece | null;
@@ -13,8 +13,12 @@ export type ChessSquare = ChessPiece | null;
 export class ChessInterface {
   private chess: ChessInstance;
 
-  constructor() {
+  constructor(pgn?: string) {
     this.chess = new Chess();
+
+    if (pgn) {
+      this.chess.load_pgn(pgn);
+    }
   }
 
   public getBoard(): ChessSquare[][] {

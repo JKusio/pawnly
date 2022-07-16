@@ -1,8 +1,7 @@
 import { PieceType } from 'chess.js';
 import { PieceColor } from 'lib/chess/ChessInterface';
-import React, { memo } from 'react';
+import React from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
-import { getChessSquareClass } from 'utils/chess';
 import { ChessPieceProps } from './props';
 
 const PIECE_MAP = {
@@ -28,75 +27,78 @@ const mapPieceToImage = (type: PieceType, color: PieceColor): string => {
   return PIECE_MAP[color][type];
 };
 
-const ChessPieceComponent = memo(
-  ({ chessPiece, onDragStart, onDrag, onDragStop }: ChessPieceProps) => {
-    const background = mapPieceToImage(chessPiece.type, chessPiece.color);
-    const piecePositionClassName = getChessSquareClass(chessPiece.square);
+const ChessPiece = ({
+  chessPiece,
+  bounds = 'parent',
+  className,
+  disabled = false,
+  onDragStart,
+  onDrag,
+  onDragStop
+}: ChessPieceProps) => {
+  const background = mapPieceToImage(chessPiece.type, chessPiece.color);
 
-    const draggableRef = React.useRef<Draggable>(null);
+  const draggableRef = React.useRef<Draggable>(null);
 
-    const handleGrabStart = (
-      e: DraggableEvent,
-      data: DraggableData
-    ): void | false => {
-      if (draggableRef.current) {
-        const middle = data.node.offsetWidth / 2;
-        draggableRef.current.setState({
-          ...draggableRef.current.state,
-          x: -middle + (e as React.MouseEvent).nativeEvent.offsetX,
-          y: -middle + (e as React.MouseEvent).nativeEvent.offsetY
-        });
+  const handleGrabStart = (
+    e: DraggableEvent,
+    data: DraggableData
+  ): void | false => {
+    if (draggableRef.current) {
+      const middle = data.node.offsetWidth / 2;
+      draggableRef.current.setState({
+        ...draggableRef.current.state,
+        x: -middle + (e as React.MouseEvent).nativeEvent.offsetX,
+        y: -middle + (e as React.MouseEvent).nativeEvent.offsetY
+      });
+    }
+
+    if (onDragStart) {
+      onDragStart({ e, data, chessPiece });
+    }
+  };
+
+  const handleDrag = (e: DraggableEvent, data: DraggableData): void | false => {
+    if (onDrag) {
+      onDrag({ e, data, chessPiece });
+    }
+  };
+
+  const handleGrabStop = (
+    e: DraggableEvent,
+    data: DraggableData
+  ): void | false => {
+    if (onDragStop) {
+      if (onDragStop({ e, data, chessPiece }) === false) {
+        return false;
       }
+    }
 
-      if (onDragStart) {
-        onDragStart(e, data, chessPiece);
-      }
-    };
+    if (draggableRef.current) {
+      draggableRef.current.setState({
+        ...draggableRef.current.state,
+        x: 0,
+        y: 0
+      });
+    }
+  };
 
-    const handleDrag = (
-      e: DraggableEvent,
-      data: DraggableData
-    ): void | false => {
-      if (onDrag) {
-        onDrag(e, data, chessPiece);
-      }
-    };
+  return (
+    <Draggable
+      onStart={handleGrabStart}
+      onDrag={handleDrag}
+      onStop={handleGrabStop}
+      bounds={bounds}
+      ref={draggableRef}
+      disabled={disabled}
+      defaultClassName={`z-10 ${!disabled ? 'cursor-grab' : 'cursor-default'}`}
+      defaultClassNameDragging="z-20 cursor-grabbing"
+    >
+      <div
+        className={`${className} ${background} bg-cover caret-transparent`}
+      ></div>
+    </Draggable>
+  );
+};
 
-    const handleGrabStop = (
-      e: DraggableEvent,
-      data: DraggableData
-    ): void | false => {
-      if (onDragStop) {
-        if (onDragStop(e, data, chessPiece) === false) {
-          return false;
-        } else {
-          if (draggableRef.current) {
-            draggableRef.current.setState({
-              ...draggableRef.current.state,
-              x: 0,
-              y: 0
-            });
-          }
-        }
-      }
-    };
-
-    return (
-      <Draggable
-        onStart={handleGrabStart}
-        onDrag={handleDrag}
-        onStop={handleGrabStop}
-        bounds="parent"
-        ref={draggableRef}
-        defaultClassName="z-10 cursor-grab"
-        defaultClassNameDragging="z-20 cursor-grabbing"
-      >
-        <div
-          className={`absolute w-1/8 h-1/8 ${piecePositionClassName} ${background} bg-cover caret-transparent`}
-        ></div>
-      </Draggable>
-    );
-  }
-);
-
-export default ChessPieceComponent;
+export default ChessPiece;

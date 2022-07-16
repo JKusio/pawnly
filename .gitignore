@@ -17,6 +17,9 @@ build
 .DS_Store
 *.pem
 
+# ENV
+.env
+
 # debug
 npm-debug.log*
 yarn-debug.log*
@@ -31,3 +34,6 @@ yarn-error.log*
 
 # turbo
 .turbo
+
+# pgn
+*.pgn

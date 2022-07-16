@@ -11,7 +11,21 @@ export const getBoardSquare = (x: number, y: number): Square => {
   }
 
   // This will always return correct square
-  return `${CHESS_COLUMNS[x]}${y + 1}` as Square;
+  return `${CHESS_COLUMNS[x]}${8 - y}` as Square;
+};
+
+export const getCordsFromSquare = (square?: Square): BoardCords | null => {
+  if (!square) {
+    return null;
+  }
+
+  console.log(square);
+
+  const [row, column] = square.split('');
+  const x = CHESS_COLUMNS.findIndex((c: string) => c === row);
+  const y = 8 - parseInt(column);
+
+  return { x, y };
 };
 
 export const getChessSquareClass = (square: Square) => {
@@ -72,7 +86,28 @@ export const calculateBoardCords = (
   const squareSize = boardSize / 8;
 
   const x = Math.floor(xDiff / squareSize);
-  const y = 7 - Math.floor(yDiff / squareSize);
+  const y = Math.floor(yDiff / squareSize);
 
   return { x, y };
 };
+
+export const getDifferenceBoard = (
+  boardA: ChessSquare[][],
+  boardB: ChessSquare[][]
+): (boolean | null)[][] =>
+  boardA.map((row, x) =>
+    row.map((square, y) => {
+      if (square === null && boardB[x][y] === null) {
+        return null;
+      }
+
+      if (
+        square?.color !== boardB[x][y]?.color ||
+        square?.type !== boardB[x][y]?.type
+      ) {
+        return false;
+      }
+
+      return true;
+    })
+  );

@@ -3,7 +3,7 @@ import Chessboard from 'components/Chessboard';
 import { ChessboardCallbackParams } from 'components/Chessboard/props';
 import { BASIC_HOVER_STATE, HoverState } from 'components/HoverSquare';
 import { useChessGame } from 'hooks/useChessGame';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   calculateBoardCords,
   getBoardSquare,
@@ -12,7 +12,9 @@ import {
 
 const ChessboardPlay = () => {
   const [chessGame, setChessGame] = useState({});
+  const [hoverState, setHoverState] = useState(BASIC_HOVER_STATE);
   const { chessInterface } = useChessGame(chessGame);
+  const boardRef = useRef<HTMLDivElement>(null);
 
   const makeMove = (from: Square, to: Square): boolean => {
     const moves = chessInterface.getMoves(from);
@@ -28,11 +30,7 @@ const ChessboardPlay = () => {
     return true;
   };
 
-  const onPieceDrag = ({
-    data,
-    boardRef,
-    setHoverState
-  }: ChessboardCallbackParams) => {
+  const onPieceDrag = ({ data }: ChessboardCallbackParams) => {
     const cords = calculateBoardCords(data, boardRef);
 
     if (!cords) {
@@ -47,12 +45,11 @@ const ChessboardPlay = () => {
     );
   };
 
-  const onPieceDragStop = ({
-    data,
-    boardRef,
-    chessPiece,
-    setHoverState
-  }: ChessboardCallbackParams) => {
+  const onPieceDragStop = ({ data, chessPiece }: ChessboardCallbackParams) => {
+    if (!chessPiece.square) {
+      return;
+    }
+
     const cords = calculateBoardCords(data, boardRef);
 
     if (!cords) {
@@ -61,9 +58,10 @@ const ChessboardPlay = () => {
 
     const to = getBoardSquare(cords.x, cords.y);
 
+    setHoverState(BASIC_HOVER_STATE);
+
     if (makeMove(chessPiece.square, to)) {
       setChessGame({ chessInterface });
-      setHoverState(BASIC_HOVER_STATE);
       return false;
     }
   };
@@ -73,8 +71,10 @@ const ChessboardPlay = () => {
       <div className="w-[640px] h-[640px]">
         <Chessboard
           board={chessInterface.getBoard()}
+          hoverState={hoverState}
           onPieceDrag={onPieceDrag}
           onPieceDragStop={onPieceDragStop}
+          ref={boardRef}
         />
       </div>
     </div>
