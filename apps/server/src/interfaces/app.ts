@@ -6,8 +6,8 @@ import { getChessGamesConfig } from "../modules/chessGames/application/ChessGame
 import { EloClient } from "../shared/common/utils/EloClient";
 import { appConfig } from "../shared/config/app.config";
 import helmet from "helmet";
+import session from "express-session";
 
-export let ELO = 800;
 export * from "./trpc";
 
 export const createApp = async (): Promise<Express> => {
@@ -21,12 +21,15 @@ export const createApp = async (): Promise<Express> => {
 	app.use(corsMiddleware);
 	app.options("*", corsMiddleware);
 	app.use(express.json());
+	app.use(
+		session({
+			secret: appConfig.SESSION_SECRET,
+			resave: false,
+			saveUninitialized: false,
+		})
+	);
 
 	const { chessGamesRouter } = getChessGamesConfig();
-	const eloClient = new EloClient();
-	const expectedResult = eloClient.calculateExpectedResult(800, 900);
-
-	console.log(eloClient.calculateExpectedRate(800, 80, 1, expectedResult));
 
 	const createContext = () => {
 		return {};

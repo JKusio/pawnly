@@ -30,6 +30,7 @@ const ChessboardVisualization = () => {
   const [boardVisualization, setBoardVisualization] = useState<
     Partial<ChessVisualization>
   >({ chessInterface: new ChessInterface(PGN) });
+
   const [hoverState, setHoverState] = useState(BASIC_HOVER_STATE);
   const { chessInterface, board, boardOverlay, state } =
     useChessboardVisualization(boardVisualization);
