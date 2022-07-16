@@ -7,6 +7,7 @@ import { EloClient } from "../shared/common/utils/EloClient";
 import { appConfig } from "../shared/config/app.config";
 import helmet from "helmet";
 import session from "express-session";
+import passport from "passport";
 
 export * from "./trpc";
 
@@ -28,6 +29,9 @@ export const createApp = async (): Promise<Express> => {
 			saveUninitialized: false,
 		})
 	);
+
+	app.use(passport.initialize());
+	app.use(passport.session());
 
 	const { chessGamesRouter } = getChessGamesConfig();
 
