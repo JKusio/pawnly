@@ -9,9 +9,9 @@ export enum AppEnvironment {
 }
 
 const validationSchema = z.object({
-	NODE_ENV: z.nativeEnum(AppEnvironment),
+	NODE_ENV: z.nativeEnum(AppEnvironment).default(AppEnvironment.DEVELOPMENT),
 	PORT: z.number().int().default(3000),
-	APP_URL: z.string().url().default("http://localhost:3000"),
+	APP_URL: z.string().url().default("http://localhost:3001"),
 });
 
 export const appConfig = validate(validationSchema);

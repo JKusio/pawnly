@@ -6,7 +6,7 @@ export const getAppRouter = ({
 }: {
 	chessGamesRouter: ChessGamesRouter;
 }) => {
-	const appRouter = trpc.router().merge(chessGamesRouter);
+	const appRouter = trpc.router().merge("chess.", chessGamesRouter);
 
 	return appRouter;
 };
